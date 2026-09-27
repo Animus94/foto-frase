@@ -6,7 +6,12 @@
  * relays the request body and passes the upstream response straight back.
  */
 
-const GITHUB_DEVICE_CODE_URL = 'https://github.com/login/oauth/device/code'
+// NOTE: this is genuinely "/login/device/code", NOT "/login/oauth/device/code"
+// (only the access_token exchange below uses the "/oauth/" prefix) — verified
+// directly against GitHub's live endpoint after the wrong URL produced a
+// generic 422 "Oh no · GitHub" HTML page (GitHub's response for a route that
+// doesn't exist under github.com's web app, not a device-flow-specific error).
+const GITHUB_DEVICE_CODE_URL = 'https://github.com/login/device/code'
 const GITHUB_ACCESS_TOKEN_URL = 'https://github.com/login/oauth/access_token'
 
 async function forwardToGithub(url: string, request: Request): Promise<Response> {
