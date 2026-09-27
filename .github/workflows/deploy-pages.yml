@@ -33,7 +33,10 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          # Matches deploy-worker.yml / local dev (v24.21.0) — Node 20 is
+          # being deprecated on GitHub-hosted runners and worker/'s wrangler
+          # already requires >=22, so both workflows track the same version.
+          node-version: 24
           cache: npm
 
       - name: Install workspace dependencies

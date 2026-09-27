@@ -26,7 +26,9 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          # wrangler 4.142.0 (worker/package.json) requires Node >=22 — hit
+          # in CI, confirmed locally too (this repo's dev Node is v24.21.0).
+          node-version: 24
 
       - name: Install worker dependencies
         working-directory: worker
