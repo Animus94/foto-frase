@@ -4,6 +4,24 @@ import { useGithubDeviceAuth, MOCK_TOKEN } from './useGithubDeviceAuth.js'
 
 const WORKER_BASE_URL = import.meta.env.VITE_WORKER_BASE_URL
 
+/**
+ * The Worker's error responses are `{ error: "<message>" }` (jsonError in
+ * worker/src/http.ts), often with useful detail (e.g. the underlying
+ * Cloudinary HTTP status — see worker/src/moderation.ts's
+ * cloudinaryErrorMessage). Reads that message instead of discarding the
+ * response body in favor of a generic "HTTP <status>" string.
+ * @param {Response} response
+ * @param {string} fallback
+ */
+async function readWorkerErrorMessage(response, fallback) {
+  try {
+    const payload = await response.json()
+    return typeof payload?.error === 'string' && payload.error ? payload.error : fallback
+  } catch {
+    return fallback
+  }
+}
+
 function buildMockSubmissions() {
   const now = Date.now()
   const hoursAgo = (hours) => new Date(now - hours * 3_600_000).toISOString()
@@ -123,7 +141,9 @@ export function useModerationApi(options = {}) {
         return
       }
       if (!response.ok) {
-        throw new Error(`Error HTTP ${response.status} al listar envíos pendientes.`)
+        throw new Error(
+          await readWorkerErrorMessage(response, `Error HTTP ${response.status} al listar envíos pendientes.`),
+        )
       }
       const payload = await response.json()
       const page = payload.items ?? payload.resources ?? []
@@ -173,9 +193,8 @@ export function useModerationApi(options = {}) {
         return false
       }
       if (!response.ok) {
-        throw new Error(
-          `Error HTTP ${response.status} al ${action === 'approve' ? 'aprobar' : 'rechazar'} el envío.`,
-        )
+        const verb = action === 'approve' ? 'aprobar' : 'rechazar'
+        throw new Error(await readWorkerErrorMessage(response, `Error HTTP ${response.status} al ${verb} el envío.`))
       }
       items.value = items.value.filter((item) => item.public_id !== publicId)
       return true
