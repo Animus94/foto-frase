@@ -8,7 +8,7 @@
 import type { Env } from './types'
 import { jsonResponse, jsonError } from './http'
 import { authorizeModerationCaller } from './github'
-import { searchPending, setTags, setContext, CloudinaryApiError } from './cloudinary'
+import { searchPending, updateResourceTagsAndContext, CloudinaryApiError } from './cloudinary'
 
 const DEFAULT_MAX_RESULTS = 50
 
@@ -43,34 +43,51 @@ export async function listPending(request: Request, env: Env): Promise<Response>
 export type ModerationAction = 'approve' | 'reject'
 
 /**
- * Both branches are idempotent: removing/adding a tag the resource already
- * doesn't/does have is a no-op on Cloudinary's side (see cloudinary.ts), so
- * calling approve or reject twice in a row on the same public_id converges
- * to the same end state without error or duplicate tags.
+ * Idempotent by construction: both branches always reconstruct the FULL
+ * desired tag list and context from scratch (never an incremental
+ * add/remove relative to whatever is already there — see
+ * updateResourceTagsAndContext's own doc comment for why), so calling
+ * approve or reject twice in a row on the same public_id converges to the
+ * same end state regardless of what state it started from.
+ *
+ * @param submissionContext - the submission's context as already known by
+ *   the caller from a prior `listPending` (phrase_id, phrase_text, variant,
+ *   sticker_name, submitted_at, device_id, ...) — sent by the backoffice
+ *   with the approve/reject request precisely so this function never has to
+ *   guess or re-fetch it. Preserved as-is aside from the moderation fields
+ *   this function itself overrides.
  */
-export async function moderate(request: Request, env: Env, publicId: string, action: ModerationAction): Promise<Response> {
+export async function moderate(
+  request: Request,
+  env: Env,
+  publicId: string,
+  action: ModerationAction,
+  submissionContext: Record<string, string>,
+): Promise<Response> {
   const auth = await authorizeModerationCaller(request, env.GITHUB_REPO)
   if (!auth.ok) return jsonError(auth.status, auth.message)
 
-  const moderatedAt = new Date().toISOString()
-  const moderatedBy = auth.caller.login
+  const status = action === 'approve' ? 'approved' : 'rejected'
+  const variant = submissionContext.variant
+  const tags = [
+    'marcha-5ta',
+    ...(variant ? [`variant:${variant}`] : []),
+    `moderation:${status}`,
+    // mural-public only ever appears for approved submissions (REQ-001:
+    // rejected ones stay archived, never exposed on the public Mural, and
+    // are never deleted).
+    ...(action === 'approve' ? ['mural-public'] : []),
+  ]
+  const context = {
+    ...submissionContext,
+    status,
+    moderated_at: new Date().toISOString(),
+    moderated_by: auth.caller.login,
+  }
 
   try {
-    await setTags(env, publicId, 'moderation:pending', 'remove')
-    if (action === 'approve') {
-      // Single call: Cloudinary accepts a comma-separated tag list.
-      await setTags(env, publicId, 'moderation:approved,mural-public', 'add')
-    } else {
-      await setTags(env, publicId, 'moderation:rejected', 'add')
-      // Never adds mural-public (REQ-001: rejected submissions stay archived,
-      // never exposed on the public Mural, and are never deleted).
-    }
-    await setContext(env, publicId, {
-      status: action === 'approve' ? 'approved' : 'rejected',
-      moderated_at: moderatedAt,
-      moderated_by: moderatedBy,
-    })
-    return jsonResponse({ ok: true, public_id: publicId, status: action === 'approve' ? 'approved' : 'rejected' })
+    await updateResourceTagsAndContext(env, publicId, { tags, context })
+    return jsonResponse({ ok: true, public_id: publicId, status })
   } catch (err) {
     const verb = action === 'approve' ? 'aprobar' : 'rechazar'
     return jsonError(502, cloudinaryErrorMessage(err, `No se pudo ${verb} el envío en Cloudinary.`))

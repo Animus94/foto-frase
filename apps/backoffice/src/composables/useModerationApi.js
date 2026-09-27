@@ -165,8 +165,12 @@ export function useModerationApi(options = {}) {
    * of that concern (disables the buttons while the request is in flight).
    * @param {string} publicId
    * @param {'approve'|'reject'} action
+   * @param {Record<string, string>} [context] - the submission's existing
+   *   context (from the same item `loadPending` returned), so the Worker can
+   *   reconstruct the full tags/context without a second Cloudinary lookup
+   *   (see worker/src/moderation.ts's `moderate`).
    */
-  async function act(publicId, action) {
+  async function act(publicId, action, context = {}) {
     if (pendingActionIds.value.has(publicId)) return false
     pendingActionIds.value = new Set(pendingActionIds.value).add(publicId)
     error.value = null
@@ -180,10 +184,11 @@ export function useModerationApi(options = {}) {
         error.value = { kind: 'config', message: 'Falta VITE_WORKER_BASE_URL en la configuración (ver .env.example).' }
         return false
       }
-      const response = await fetch(
-        `${WORKER_BASE_URL}/moderation/${encodeURIComponent(publicId)}/${action}`,
-        { method: 'POST', headers: authHeaders() },
-      )
+      const response = await fetch(`${WORKER_BASE_URL}/moderation/${encodeURIComponent(publicId)}/${action}`, {
+        method: 'POST',
+        headers: { ...authHeaders(), 'Content-Type': 'application/json' },
+        body: JSON.stringify({ context }),
+      })
       if (response.status === 401 || response.status === 403) {
         error.value = {
           kind: 'unauthorized',
@@ -208,12 +213,12 @@ export function useModerationApi(options = {}) {
     }
   }
 
-  function approve(publicId) {
-    return act(publicId, 'approve')
+  function approve(publicId, context) {
+    return act(publicId, 'approve', context)
   }
 
-  function reject(publicId) {
-    return act(publicId, 'reject')
+  function reject(publicId, context) {
+    return act(publicId, 'reject', context)
   }
 
   function isActionPending(publicId) {

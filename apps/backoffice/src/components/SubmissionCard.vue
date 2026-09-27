@@ -43,7 +43,7 @@ function formatDate(iso) {
         type="button"
         class="ff-button"
         :disabled="props.busy"
-        @click="emit('approve', submission.public_id)"
+        @click="emit('approve', submission)"
       >
         Aprobar
       </button>
@@ -51,7 +51,7 @@ function formatDate(iso) {
         type="button"
         class="ff-button ff-button--danger"
         :disabled="props.busy"
-        @click="emit('reject', submission.public_id)"
+        @click="emit('reject', submission)"
       >
         Rechazar
       </button>

@@ -81,40 +81,40 @@ export async function searchPending(
 }
 
 /**
- * Adds or removes one or more tags on a single resource. `tag` may be a
- * comma-separated list (Cloudinary supports assigning/removing several tags
- * in one call this way). Both add and remove are idempotent on Cloudinary's
- * side: adding a tag the resource already has, or removing one it doesn't
- * have, is a no-op rather than an error — which is what lets `approve`/
- * `reject` be called twice in a row safely (ADR-001 QA notes).
+ * Sets a resource's tags and context in one call, via the single-resource
+ * "update" endpoint (`POST /resources/<resource_type>/<type>/<public_id>`).
+ *
+ * This replaces an earlier attempt at a "bulk tags"/"bulk context" endpoint
+ * (`/resources/image/tags`, `/resources/image/context` with a `public_ids`
+ * array) that turned out not to exist at all — confirmed live: it returned
+ * Cloudinary's marketing-site 404 HTML page, not a JSON API error, meaning
+ * the path itself was never a real endpoint. This one is confirmed against
+ * Cloudinary's own official Python SDK source
+ * (cloudinary/api.py's `update()`), which builds the exact same
+ * `["resources", resource_type, type, public_id]` path and posts `tags`
+ * (comma-joined) + `context` (pipe-encoded) as JSON body fields.
+ *
+ * Both `tags` and `context` here are the FULL desired final value, not an
+ * incremental add/remove — the docs don't clearly state whether this
+ * endpoint merges or replaces either field, so the caller (moderation.ts)
+ * always reconstructs the complete set from the submission's existing data
+ * plus the moderation outcome, making this correct either way.
  */
-export async function setTags(
+export async function updateResourceTagsAndContext(
   env: CloudinaryEnv,
   publicId: string,
-  tag: string,
-  command: 'add' | 'remove',
+  params: { tags: string[]; context: Record<string, string> },
 ): Promise<void> {
-  await cloudinaryPost(env, '/resources/image/tags', {
-    public_ids: [publicId],
-    tag,
-    command,
-  })
-}
-
-/**
- * Merges (`command: "add"`) the given key/value pairs into the resource's
- * context. Values are escaped per Cloudinary's context string format
- * (pipe-separated pairs, `=` inside a pair — a literal `\`, `|` or `=` in a
- * value must be backslash-escaped or it would corrupt the encoding).
- */
-export async function setContext(env: CloudinaryEnv, publicId: string, context: Record<string, string>): Promise<void> {
-  const encoded = Object.entries(context)
+  const encodedContext = Object.entries(params.context)
     .map(([key, value]) => `${key}=${escapeContextValue(value)}`)
     .join('|')
-  await cloudinaryPost(env, '/resources/image/context', {
-    public_ids: [publicId],
-    context: encoded,
-    command: 'add',
+  // publicId's own slashes (e.g. "marcha-5ta/submissions/<uuid>") are meant
+  // to be literal path segments here, matching Cloudinary's own public_id
+  // structure — not percent-encoded, unlike when the same string travels as
+  // a single path segment elsewhere (worker/src/index.ts's route param).
+  await cloudinaryPost(env, `/resources/image/upload/${publicId}`, {
+    tags: params.tags.join(','),
+    context: encodedContext,
   })
 }
 

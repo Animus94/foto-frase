@@ -12,15 +12,15 @@ const { isConfigured, items, hasMore, loading, error, loadPending, approve, reje
 
 const actionError = ref(null)
 
-async function handleApprove(publicId) {
+async function handleApprove(submission) {
   actionError.value = null
-  const ok = await approve(publicId)
+  const ok = await approve(submission.public_id, submission.context)
   if (!ok && error.value) actionError.value = error.value
 }
 
-async function handleReject(publicId) {
+async function handleReject(submission) {
   actionError.value = null
-  const ok = await reject(publicId)
+  const ok = await reject(submission.public_id, submission.context)
   if (!ok && error.value) actionError.value = error.value
 }
 

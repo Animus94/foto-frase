@@ -44,7 +44,15 @@ export default {
         // path segment (useModerationApi.js) — decode it back here.
         const publicId = decodeURIComponent(moderationMatch[1])
         const action = moderationMatch[2] as 'approve' | 'reject'
-        return withCors(await moderate(request, env, publicId, action), env)
+        // Body carries the submission's existing context (useModerationApi.js
+        // sends it from what listPending already returned) so moderate() can
+        // reconstruct the full tags/context without a second Cloudinary
+        // round-trip. Malformed/missing body degrades to an empty context
+        // rather than failing the request outright.
+        const body = await request
+          .json<{ context?: Record<string, string> }>()
+          .catch(() => ({}) as { context?: Record<string, string> })
+        return withCors(await moderate(request, env, publicId, action, body.context ?? {}), env)
       }
 
       return withCors(jsonError(404, 'Ruta no encontrada.'), env)
