@@ -4,10 +4,14 @@ import { RouterLink } from 'vue-router'
 import { useCampaign } from '@/composables/useCampaign.js'
 import { useMuralListing } from '@/composables/useMuralListing.js'
 import MuralGrid from '@/components/MuralGrid.vue'
+import JoinQr from '@/components/JoinQr.vue'
 
 const campaign = useCampaign()
 // gridPageSize defaults to 100 (REQ-001) until campaign.json resolves.
 const mural = useMuralListing({ gridPageSize: 100, allowMock: true })
+
+// Same absolute-URL pattern as shareMural() in CaptureFlow.vue (REQ-002 §7).
+const joinUrl = `${window.location.origin}${import.meta.env.BASE_URL}`
 
 onMounted(async () => {
   await campaign.load()
@@ -27,7 +31,7 @@ onMounted(async () => {
          whoever opens the link (e.g. via the "Compartir" button) to submit
          their own photo. -->
     <div class="ff-mural-actions">
-      <RouterLink to="/" class="ff-button">Sumar mi foto</RouterLink>
+      <JoinQr :url="joinUrl" label="Sumate" />
       <RouterLink to="/carrusel" class="ff-button ff-button--secondary">Ver como carrusel</RouterLink>
     </div>
 
@@ -47,6 +51,7 @@ onMounted(async () => {
 <style scoped>
 .ff-mural-actions {
   display: flex;
+  align-items: center;
   gap: 0.6rem;
   flex-wrap: wrap;
 }

@@ -89,7 +89,7 @@ function shareMural() {
   share.share({
     url: muralUrl,
     title: 'Mural — 5ta Marcha Federal Universitaria',
-    text: 'Mirá el Mural de la 5ta Marcha Federal Universitaria y sumá tu foto.',
+    text: 'Yo me sumé a la marcha por la universidad pública el 15/10, ahora sumate vos',
   })
 }
 
