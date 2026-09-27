@@ -47,5 +47,16 @@ export function usePhrases() {
     return `${prefix.value} ${option.label}`
   }
 
-  return { prefix, options, loading, error, load, resolvePhraseText }
+  /**
+   * Resolves just the option's label (no prefix) — used by the canvas
+   * composition (REQ-002 §5) to draw the prefix and the phrase with two
+   * different styles instead of one combined string.
+   * @param {string} phraseId
+   */
+  function resolvePhraseLabel(phraseId) {
+    const option = options.value.find((item) => item.id === phraseId)
+    return option ? option.label : null
+  }
+
+  return { prefix, options, loading, error, load, resolvePhraseText, resolvePhraseLabel }
 }

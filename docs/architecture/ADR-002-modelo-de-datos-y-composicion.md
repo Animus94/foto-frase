@@ -77,7 +77,7 @@ Cloudinary o desde el Worker, no para filtrar masivamente):
   opción en `phrases.json`, el envío histórico no debe cambiar de significado ni depender de que el
   `id` siga existiendo.
 - `variant`: `"selfie"` | `"alternative"` (duplicado del tag, más cómodo de leer a mano).
-- `sticker_name`: nombre de hasta 20 caracteres (solo variante `alternative`; ausente en selfie).
+- `sticker_name`: nombre de hasta 20 caracteres. **Actualizado por REQ-002**: se dibuja y se guarda para ambas variantes (`selfie` y `alternative`) — originalmente esta ADR lo limitaba a `alternative`, pero REQ-002 pidió que Selfie también pida y muestre el nombre.
 - `status`: duplicado legible del tag de moderación.
 - `submitted_at`: ISO 8601, generado por el cliente al momento del envío.
 - `device_id`: UUID anónimo generado por el dispositivo (ver punto 6) — **solo para uso interno de

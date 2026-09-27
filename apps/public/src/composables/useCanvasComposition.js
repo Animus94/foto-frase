@@ -48,9 +48,10 @@ function loadLogoImage() {
 /**
  * Client-side image composition pipeline (ADR-002 §4): base photo → bottom
  * caption stripe with the chosen phrase → logo + "#Yo voy" watermark in a
- * corner clear of the stripe → (alternative variant only) name sticker in
- * the opposite corner. The exported JPEG Blob is the ONLY image that ever
- * leaves the device — the raw camera frame is never uploaded.
+ * corner clear of the stripe → name sticker in the opposite corner whenever
+ * a name was entered (REQ-002 §1/§2: both variants now, not just
+ * "alternative"). The exported JPEG Blob is the ONLY image that ever leaves
+ * the device — the raw camera frame is never uploaded.
  */
 export function useCanvasComposition() {
   const isComposing = ref(false)
@@ -62,8 +63,10 @@ export function useCanvasComposition() {
    * @param {number} params.sourceWidth
    * @param {number} params.sourceHeight
    * @param {'selfie'|'alternative'} params.variant
-   * @param {string} params.phraseText - full resolved sentence, e.g. "Yo voy a la Marcha... Con mi familia".
-   * @param {string} [params.stickerName] - required for variant "alternative".
+   * @param {string} params.phrasePrefix - fixed campaign prefix, e.g. "Yo voy a la Marcha...".
+   * @param {string} params.phraseLabel - the chosen phrase option's label, e.g. "Con mi familia".
+   * @param {string} [params.stickerName] - name-sticker text (REQ-002 §1/§2: collected and drawn
+   *   for BOTH variants now, not just "alternative" — drawn whenever non-empty).
    * @param {boolean} [params.mirror] - true to horizontally flip the base photo (typical selfie preview behavior).
    * @returns {Promise<{ blob: Blob, previewUrl: string, width: number, height: number }>}
    */
@@ -72,20 +75,15 @@ export function useCanvasComposition() {
     sourceWidth,
     sourceHeight,
     variant,
-    phraseText,
+    phrasePrefix,
+    phraseLabel,
     stickerName,
     mirror = false,
   }) {
     isComposing.value = true
     error.value = null
     try {
-      if (variant === 'alternative') {
-        const sanitized = sanitizeStickerName(stickerName, STICKER_MAX_LENGTH)
-        if (!sanitized) {
-          throw new Error('El nombre del sticker es obligatorio para la variante alternativa')
-        }
-        stickerName = sanitized
-      }
+      const sanitizedStickerName = sanitizeStickerName(stickerName, STICKER_MAX_LENGTH)
 
       const [, logo] = await Promise.all([loadCompositionFont(), loadLogoImage()])
 
@@ -96,10 +94,12 @@ export function useCanvasComposition() {
       const ctx = canvas.getContext('2d')
 
       drawBasePhoto(ctx, source, width, height, mirror)
-      drawCaptionStripe(ctx, width, height, phraseText)
-      drawWatermark(ctx, width, height, logo)
-      if (variant === 'alternative') {
-        drawNameSticker(ctx, width, height, stickerName)
+      drawCaptionStripe(ctx, width, height, phrasePrefix, phraseLabel)
+      const { pillWidth: watermarkPillWidth } = drawWatermark(ctx, width, height, logo)
+      // REQ-002 §1/§2: no longer gated by variant — draw it for selfie too,
+      // as long as the user actually entered a name.
+      if (sanitizedStickerName) {
+        drawNameSticker(ctx, width, height, sanitizedStickerName, watermarkPillWidth)
       }
 
       const blob = await new Promise((resolve, reject) => {
@@ -132,37 +132,65 @@ function drawBasePhoto(ctx, source, width, height, mirror) {
   ctx.restore()
 }
 
-function drawCaptionStripe(ctx, width, height, phraseText) {
+function drawCaptionStripe(ctx, width, height, phrasePrefix, phraseLabel) {
   const padding = Math.round(width * 0.05)
   const maxFontSize = Math.round(height * 0.052)
   const minFontSize = Math.round(height * 0.026)
   const maxLines = 2
   const lineHeightFactor = 1.25
 
-  const { fontSize, lines } = fitTextToLines(ctx, phraseText, {
+  const { fontSize, lines } = fitTextToLines(ctx, phraseLabel, {
     maxWidth: width - padding * 2,
     maxLines,
     maxFontSize,
     minFontSize,
     fontString: (size) => `bold ${size}px "${FONT_FAMILY}"`,
   })
-
   const lineHeight = fontSize * lineHeightFactor
   const stripePadding = Math.round(fontSize * 0.7)
-  const stripeHeight = lines.length * lineHeight + stripePadding * 2
+
+  // REQ-002 §5: the fixed "Yo voy a la Marcha..." prefix gets its own
+  // tag/hashtag look — solid pill, uppercase, bold, a bit smaller than the
+  // phrase — visually separated from the freely-chosen phrase below it,
+  // which keeps the exact plain-text style it already had. This is a
+  // distinct element from the logo/"#Yo voy" watermark (untouched here).
+  const tagFontSize = Math.max(Math.round(fontSize * 0.6), 14)
+  ctx.font = `bold ${tagFontSize}px "${FONT_FAMILY}"`
+  const tagText = phrasePrefix.toUpperCase()
+  const tagTextWidth = ctx.measureText(tagText).width
+  const tagPaddingX = Math.round(tagFontSize * 0.65)
+  const tagPaddingY = Math.round(tagFontSize * 0.45)
+  const tagPillWidth = Math.min(tagTextWidth + tagPaddingX * 2, width - padding * 2)
+  const tagPillHeight = tagFontSize + tagPaddingY * 2
+  const tagGap = Math.round(fontSize * 0.4)
+
+  const phraseBlockHeight = lines.length * lineHeight
+  const stripeHeight = stripePadding * 2 + tagPillHeight + tagGap + phraseBlockHeight
 
   // Semi-transparent full-width stripe at the bottom, so the caption stays
   // legible over any photo background (ADR-002 §4.3) without covering the
   // center of the photo.
+  const stripeTop = height - stripeHeight
   ctx.fillStyle = 'rgba(0, 0, 0, 0.55)'
-  ctx.fillRect(0, height - stripeHeight, width, stripeHeight)
+  ctx.fillRect(0, stripeTop, width, stripeHeight)
 
+  // Tag/chip for the prefix.
+  const tagPillX = width / 2 - tagPillWidth / 2
+  const tagPillY = stripeTop + stripePadding
+  drawRoundedRect(ctx, tagPillX, tagPillY, tagPillWidth, tagPillHeight, tagPillHeight / 2, '#358e3d')
+  ctx.fillStyle = '#ffffff'
+  ctx.font = `bold ${tagFontSize}px "${FONT_FAMILY}"`
+  ctx.textAlign = 'center'
+  ctx.textBaseline = 'middle'
+  ctx.fillText(tagText, width / 2, tagPillY + tagPillHeight / 2, tagPillWidth - tagPaddingX)
+
+  // Plain-text phrase, same style as before.
   ctx.fillStyle = '#ffffff'
   ctx.font = `bold ${fontSize}px "${FONT_FAMILY}"`
   ctx.textAlign = 'center'
   ctx.textBaseline = 'middle'
 
-  const firstLineY = height - stripeHeight + stripePadding + lineHeight / 2
+  const firstLineY = tagPillY + tagPillHeight + tagGap + lineHeight / 2
   lines.forEach((line, index) => {
     ctx.fillText(line, width / 2, firstLineY + index * lineHeight)
   })
@@ -170,12 +198,16 @@ function drawCaptionStripe(ctx, width, height, phraseText) {
 
 function drawWatermark(ctx, width, height, logo) {
   // Top-right corner: never collides with the bottom caption stripe, and
-  // (when variant is "alternative") stays clear of the name sticker in the
-  // opposite (top-left) corner.
+  // stays clear of the name sticker in the opposite (top-left) corner
+  // (drawNameSticker uses this pill's width, returned below, to guarantee
+  // that gap).
+  // REQ-002 §3: sized up noticeably from the original (logoHeight 0.06 → 0.095,
+  // fontSize 0.024 → 0.038 of height) while staying anchored to the top-right
+  // corner, clear of both the photo's center and the bottom caption stripe.
   const margin = Math.round(width * 0.03)
-  const logoHeight = Math.round(height * 0.06)
+  const logoHeight = Math.round(height * 0.095)
   const logoWidth = Math.round(logoHeight * (logo.naturalWidth / logo.naturalHeight))
-  const fontSize = Math.max(Math.round(height * 0.024), 14)
+  const fontSize = Math.max(Math.round(height * 0.038), 20)
   const label = '#Yo voy'
 
   ctx.font = `bold ${fontSize}px "${FONT_FAMILY}"`
@@ -200,19 +232,59 @@ function drawWatermark(ctx, width, height, logo) {
   ctx.textAlign = 'left'
   ctx.textBaseline = 'middle'
   ctx.fillText(label, logoX + logoWidth + gap, pillY + pillHeight / 2)
+
+  return { pillWidth }
 }
 
-function drawNameSticker(ctx, width, height, name) {
+function drawNameSticker(ctx, width, height, name, watermarkPillWidth) {
   // Top-left corner: clear of both the bottom stripe and the top-right
   // watermark.
+  // REQ-002 §4: sized up noticeably (fontSize 0.026 → 0.042 of height), same
+  // top-left placement so it stays clear of the bottom caption stripe. Names
+  // are user-typed (up to 20 chars) so, unlike the watermark, the pill width
+  // here isn't fixed — at this larger size a long name can get close to the
+  // watermark pill on narrower photos. `watermarkPillWidth` bounds how much
+  // room is actually free, and the font shrinks (then truncates as a last
+  // resort) to always leave a clear gap between the two.
   const margin = Math.round(width * 0.03)
-  const fontSize = Math.max(Math.round(height * 0.026), 15)
-  ctx.font = `bold ${fontSize}px "${FONT_FAMILY}"`
-  const textWidth = ctx.measureText(name).width
+  const maxFontSize = Math.max(Math.round(height * 0.042), 22)
+  const minFontSize = Math.max(Math.round(height * 0.022), 14)
+  const safetyGap = Math.round(width * 0.04)
+  const maxPillWidth = Math.max(
+    width - margin * 2 - watermarkPillWidth - safetyGap,
+    Math.round(width * 0.22),
+  )
 
-  const paddingX = Math.round(fontSize * 0.7)
+  let fontSize = maxFontSize
+  let paddingX = Math.round(fontSize * 0.7)
+  let textWidth = 0
+  let pillWidth = 0
+  for (;;) {
+    ctx.font = `bold ${fontSize}px "${FONT_FAMILY}"`
+    paddingX = Math.round(fontSize * 0.7)
+    textWidth = ctx.measureText(name).width
+    pillWidth = textWidth + paddingX * 2
+    if (pillWidth <= maxPillWidth || fontSize <= minFontSize) break
+    fontSize -= 1
+  }
+
+  let renderedName = name
+  if (pillWidth > maxPillWidth) {
+    // Still doesn't fit even at the minimum font size: truncate with an
+    // ellipsis rather than let it overlap the watermark.
+    while (renderedName.length > 1) {
+      renderedName = renderedName.slice(0, -1)
+      const candidate = `${renderedName}…`
+      textWidth = ctx.measureText(candidate).width
+      pillWidth = textWidth + paddingX * 2
+      if (pillWidth <= maxPillWidth) {
+        renderedName = candidate
+        break
+      }
+    }
+  }
+
   const paddingY = Math.round(fontSize * 0.5)
-  const pillWidth = textWidth + paddingX * 2
   const pillHeight = fontSize + paddingY * 2
 
   drawRoundedRect(ctx, margin, margin, pillWidth, pillHeight, pillHeight / 2, 'rgba(53, 142, 61, 0.85)')
@@ -220,7 +292,7 @@ function drawNameSticker(ctx, width, height, name) {
   ctx.fillStyle = '#ffffff'
   ctx.textAlign = 'left'
   ctx.textBaseline = 'middle'
-  ctx.fillText(name, margin + paddingX, margin + pillHeight / 2)
+  ctx.fillText(renderedName, margin + paddingX, margin + pillHeight / 2)
 }
 
 function drawRoundedRect(ctx, x, y, w, h, radius, fillStyle) {

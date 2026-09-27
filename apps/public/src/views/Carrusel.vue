@@ -3,10 +3,9 @@ import { onMounted } from 'vue'
 import { RouterLink } from 'vue-router'
 import { useCampaign } from '@/composables/useCampaign.js'
 import { useMuralListing } from '@/composables/useMuralListing.js'
-import MuralGrid from '@/components/MuralGrid.vue'
+import MuralCarousel from '@/components/MuralCarousel.vue'
 
 const campaign = useCampaign()
-// gridPageSize defaults to 100 (REQ-001) until campaign.json resolves.
 const mural = useMuralListing({ gridPageSize: 100, allowMock: true })
 
 onMounted(async () => {
@@ -17,30 +16,20 @@ onMounted(async () => {
 
 <template>
   <section class="ff-screen">
-    <h1>Mural de la 5ta Marcha</h1>
+    <h1>Mural de la 5ta Marcha — Carrusel</h1>
     <p class="ff-muted">
-      Envíos ya aprobados por el equipo de moderación. El Mural sigue visible después del cierre de
-      envíos, como archivo del evento.
+      Los mismos envíos aprobados del Mural, en formato carrusel para recorrerlos uno por uno.
     </p>
 
-    <!-- REQ-002 §7: this page was read-only before — now it also invites
-         whoever opens the link (e.g. via the "Compartir" button) to submit
-         their own photo. -->
     <div class="ff-mural-actions">
       <RouterLink to="/" class="ff-button">Sumar mi foto</RouterLink>
-      <RouterLink to="/carrusel" class="ff-button ff-button--secondary">Ver como carrusel</RouterLink>
+      <RouterLink to="/mural" class="ff-button ff-button--secondary">Ver como grilla</RouterLink>
     </div>
 
     <p v-if="mural.error.value" class="ff-error">{{ mural.error.value }}</p>
     <p v-else-if="mural.loading.value" class="ff-muted">Cargando…</p>
 
-    <MuralGrid
-      v-else
-      :items="mural.pageItems.value"
-      :page="mural.page.value"
-      :total-pages="mural.totalPages.value"
-      @update:page="mural.setPage"
-    />
+    <MuralCarousel v-else :resources="mural.resources.value" />
   </section>
 </template>
 

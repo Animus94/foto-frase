@@ -7,6 +7,7 @@ import { useCampaign } from '@/composables/useCampaign.js'
 import { useDeviceSubmissions } from '@/composables/useDeviceSubmissions.js'
 import { useCanvasComposition } from '@/composables/useCanvasComposition.js'
 import { useCloudinaryUpload } from '@/composables/useCloudinaryUpload.js'
+import { useShare } from '@/composables/useShare.js'
 import ModeSelect from '@/components/ModeSelect.vue'
 import CameraCapture from '@/components/CameraCapture.vue'
 import PhraseSelect from '@/components/PhraseSelect.vue'
@@ -17,6 +18,7 @@ const campaign = useCampaign()
 const deviceSubmissions = useDeviceSubmissions()
 const composition = useCanvasComposition()
 const upload = useCloudinaryUpload()
+const share = useShare()
 
 const step = ref('mode') // 'mode' | 'camera' | 'phrase' | 'consent' | 'done'
 const mode = ref(VARIANTS.SELFIE) // selfie preselected by default (REQ-001)
@@ -57,15 +59,17 @@ function handleCaptured(frame) {
 }
 
 async function handlePhraseContinue() {
-  const phraseText = phrases.resolvePhraseText(selectedPhraseId.value)
-  if (!phraseText || !capturedFrame.value) return
+  const phraseLabel = phrases.resolvePhraseLabel(selectedPhraseId.value)
+  if (!phraseLabel || !capturedFrame.value) return
   try {
     composed.value = await composition.composeSubmissionImage({
       source: capturedFrame.value.source,
       sourceWidth: capturedFrame.value.width,
       sourceHeight: capturedFrame.value.height,
       variant: mode.value,
-      phraseText,
+      phrasePrefix: phrases.prefix.value,
+      phraseLabel,
+      // REQ-002 §1/§2: collected and drawn for both variants now.
       stickerName: stickerName.value,
       mirror: capturedFrame.value.mirror,
     })
@@ -73,6 +77,20 @@ async function handlePhraseContinue() {
   } catch {
     // composition.error already holds a user-facing message, shown on the phrase step.
   }
+}
+
+/**
+ * Shares the Mural's absolute production URL (REQ-002 §7) — built from the
+ * current origin + the app's base path, never a hardcoded domain, so it
+ * works the same in dev, preview and GitHub Pages.
+ */
+function shareMural() {
+  const muralUrl = `${window.location.origin}${import.meta.env.BASE_URL}mural`
+  share.share({
+    url: muralUrl,
+    title: 'Mural — 5ta Marcha Federal Universitaria',
+    text: 'Mirá el Mural de la 5ta Marcha Federal Universitaria y sumá tu foto.',
+  })
 }
 
 async function handleSubmit() {
@@ -92,7 +110,8 @@ async function handleSubmit() {
       variant: mode.value,
       phraseId: selectedPhraseId.value,
       phraseText,
-      stickerName: mode.value === VARIANTS.ALTERNATIVE ? stickerName.value : undefined,
+      // REQ-002 §1/§2: collected (and now drawn) for both variants.
+      stickerName: stickerName.value,
       deviceId: deviceSubmissions.deviceId.value,
     })
     deviceSubmissions.recordSubmission({
@@ -167,6 +186,12 @@ async function handleSubmit() {
         Tu foto quedó pendiente de revisión. Cuando el equipo la apruebe, va a aparecer en el
         <RouterLink to="/mural">Mural</RouterLink>.
       </p>
+      <p class="ff-muted">
+        Mientras tanto, ayudá a difundir la campaña compartiendo el Mural con lo que ya se sumó.
+      </p>
+      <button class="ff-button" :disabled="share.isSharing.value" @click="shareMural">Compartir</button>
+      <p v-if="share.feedback.value" class="ff-muted">{{ share.feedback.value }}</p>
+      <p v-if="share.error.value" class="ff-error">{{ share.error.value }}</p>
     </section>
   </template>
 </template>

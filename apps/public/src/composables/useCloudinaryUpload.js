@@ -71,7 +71,10 @@ export function useCloudinaryUpload() {
         phrase_id: phraseId,
         phrase_text: phraseText,
         variant,
-        sticker_name: variant === 'alternative' ? stickerName : undefined,
+        // REQ-002 §1/§2: the name-sticker is now drawn on both variants, so
+        // the Cloudinary context/moderation UI reflects it for both too —
+        // no longer just 'alternative' (ADR-002 §3's original schema note).
+        sticker_name: stickerName || undefined,
         status: STATUS.PENDING,
         submitted_at: submittedAt,
         device_id: deviceId,

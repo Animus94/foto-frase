@@ -9,9 +9,11 @@ const emit = defineEmits(['update:modelValue', 'update:stickerName', 'continue']
 
 const STICKER_MAX_LENGTH = 20
 
+// REQ-002 §1: the name-sticker field (and its validation) is no longer
+// exclusive to the "alternative" variant — Selfie also requires it now.
 const canContinue = computed(() => {
-  if (props.modelValue === 'selfie') return true
-  return props.stickerName.trim().length > 0 && props.stickerName.trim().length <= STICKER_MAX_LENGTH
+  const trimmed = props.stickerName.trim()
+  return trimmed.length > 0 && trimmed.length <= STICKER_MAX_LENGTH
 })
 </script>
 
@@ -48,7 +50,7 @@ const canContinue = computed(() => {
       </div>
     </label>
 
-    <div v-if="modelValue === 'alternative'" class="ff-sticker-input">
+    <div class="ff-sticker-input">
       <label for="sticker-name">Tu nombre (máx. 20 caracteres)</label>
       <input
         id="sticker-name"
