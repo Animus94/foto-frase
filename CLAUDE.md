@@ -58,4 +58,7 @@ El orquestador de todo este flujo es la sesión principal de Claude Code: recibe
 
 ## Estado actual
 
-Proyecto recién inicializado: solo existe la orquestación de agentes y este documento. Todavía no hay ningún requerimiento cargado en `docs/requirements/`. El próximo paso es que el usuario explique sus necesidades en el chat para que `requirements-analyst` las convierta en el primer REQ.
+- Orquestación de agentes y este documento: listos.
+- Repositorio GitHub: [`fpuricelli/foto-frase`](https://github.com/fpuricelli/foto-frase), rama `main`. GitHub Pages todavía no está habilitado (pendiente para cuando `deploy-engineer` arme el workflow).
+- Cuenta de Cloudinary: ya existe (del usuario). Falta registrar acá el `cloud name` y crear el *upload preset* unsigned cuando `architect`/`deploy-engineer` lo necesiten.
+- Todavía no hay ningún requerimiento cargado en `docs/requirements/`. El próximo paso es que el usuario explique sus necesidades en el chat para que `requirements-analyst` las convierta en el primer REQ.
