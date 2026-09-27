@@ -67,7 +67,12 @@ export async function searchPending(
   maxResults: number,
 ): Promise<SearchPendingResult> {
   return cloudinaryPost<SearchPendingResult>(env, '/resources/search', {
-    expression: 'tags=moderation:pending',
+    // The `:` inside our own tag value ("moderation:pending") collides with
+    // Cloudinary's own `field:value` operator in its search expression
+    // language — confirmed live: `tags=moderation:pending` (no quotes) fails
+    // with "Query Error (at position 16) 'tags=moderation :pending'".
+    // Quoting the value makes the inner colon literal instead of an operator.
+    expression: 'tags:"moderation:pending"',
     max_results: maxResults,
     with_field: ['context', 'tags'],
     sort_by: [{ created_at: 'asc' }],
