@@ -32,18 +32,17 @@ sumar mi presencia al Mural colectivo de la campaña antes del 15 de octubre.
   el Mural público (para evitar fakes o malas intenciones).
 - Web pública del Mural, con URL propia, que muestra los envíos ya aprobados en dos formatos:
   - (a) carrusel/"carrete" que va pasando las fotos.
-  - (b) grilla de "casilleros" que se completan a medida que llegan envíos, hasta una cantidad
-    máxima **X** por grilla (valor exacto: ver pregunta abierta); al superarse esa cantidad, se
-    habilita otra grilla a la que se accede scrolleando.
+  - (b) grilla de "casilleros" que se completan a medida que llegan envíos, hasta un máximo de
+    **100** casilleros por grilla; al superarse esa cantidad, se habilita otra grilla a la que se
+    accede scrolleando.
 - Límite de **4 envíos por persona/dispositivo**, para evitar spam de un mismo usuario.
 - Si el admin rechaza un envío: no se le notifica al usuario y no tiene una vía de reintento sobre
   ese mismo envío (queda descartado en silencio).
 - Consentimiento: checkbox obligatorio antes de poder enviar, con el texto exacto: *"Al enviar el
   post acepto que la imagen será publicada en una web de acceso público."*
 - El Mural público es accesible por cualquiera que tenga la URL, sin ningún control de acceso.
-- La app deja de aceptar envíos después del 15/10 (fecha de la marcha) — alcance exacto de "deja de
-  funcionar" (¿solo se bloquea el envío, o se da de baja también la web del Mural?): ver pregunta
-  abierta.
+- La app deja de aceptar envíos nuevos después del 15/10 (fecha de la marcha); el Mural público
+  (carrusel + grilla) sigue visible después de esa fecha como archivo del evento.
 - Marca de agua obligatoria sobre **toda** foto subida (selfie o alternativa): el logo oficial
   (`docs/assets/branding/logo-5ta-marcha-federal.png`) + el texto "#Yo voy", superpuestos como
   marca de agua — el propósito explícito es que la imagen no pueda reutilizarse sin esa marca si
@@ -86,8 +85,8 @@ sumar mi presencia al Mural colectivo de la campaña antes del 15 de octubre.
       envíos aprobados.
 - [ ] En esa web, el Mural puede visualizarse como carrusel que va pasando las fotos aprobadas.
 - [ ] En esa misma web, el Mural puede visualizarse también como grilla de casilleros que se van
-      completando a medida que hay envíos aprobados, y al llegar a la cantidad máxima X por grilla
-      se habilita una grilla siguiente accesible scrolleando.
+      completando a medida que hay envíos aprobados, y al llegar a 100 casilleros se habilita una
+      grilla siguiente accesible scrolleando.
 - [ ] Toda foto subida (selfie o alternativa) queda con el logo oficial + el texto "#Yo voy" como
       marca de agua incorporada a la propia imagen, y con la leyenda "Yo voy a la Marcha... <frase>"
       superpuesta al pie.
@@ -98,7 +97,7 @@ sumar mi presencia al Mural colectivo de la campaña antes del 15 de octubre.
       sobre ese envío.
 - [ ] El checkbox de consentimiento muestra exactamente el texto: "Al enviar el post acepto que la
       imagen será publicada en una web de acceso público."
-- [ ] Después del 15/10 la app deja de aceptar nuevos envíos.
+- [ ] Después del 15/10 la app deja de aceptar nuevos envíos, pero el Mural público sigue visible.
 
 ## Restricciones aplicables
 
@@ -144,13 +143,11 @@ Marcados explícitamente como supuestos del analista, no como decisiones del usu
 
 ## Preguntas abiertas
 
-La mayoría de las preguntas originales quedaron resueltas por el usuario (ver Alcance, Criterios de
-aceptación y Supuestos). Quedan pendientes solo estas dos:
+Ninguna. Las dos últimas quedaron resueltas:
 
-1. **Valor exacto de X**: ¿cuántos casilleros entran en cada grilla del Mural antes de pasar a la
-   siguiente (scrolleando)? Necesario para que `architect`/`frontend-developer` puedan diseñar el
-   layout.
-2. **Alcance exacto del corte del 15/10**: la app "no sigue funcionando" después de esa fecha —
-   ¿esto significa que solo se bloquean los envíos nuevos pero el Mural público sigue visible como
-   archivo del evento, o que la web entera (incluido el Mural) se da de baja? Afecta si
-   `deploy-engineer` tiene que programar algo para esa fecha o no.
+- X = **100** casilleros por grilla (a partir del casillero 101 se pasa a una grilla siguiente,
+  scrolleando).
+- Después del 15/10 solo se bloquean los envíos nuevos; el Mural público (carrusel + grilla) sigue
+  visible como archivo del evento.
+
+REQ-001 queda cerrado y listo para pasar a `architect`.
