@@ -1,0 +1,119 @@
+name: Deploy Pages
+
+# ADR-003: a single GitHub Pages site serves both apps — apps/public at the
+# root ('/') and apps/backoffice under a subpath ('/backoffice/'). This
+# workflow builds both with Vite, combines their dist/ output into one
+# artifact (with a per-app 404.html SPA fallback), and publishes it with
+# actions/deploy-pages. It never touches worker/ (see deploy-worker.yml).
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - "worker/**"
+      - ".github/workflows/deploy-worker.yml"
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Build both apps
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install workspace dependencies
+        run: npm ci
+
+      # GitHub Pages serves this repo as a *project* page (its name isn't
+      # `<owner>.github.io` and no custom domain is configured — see
+      # docs/deploy/RUNBOOK.md), so the site itself lives under `/<repo>/`,
+      # not the domain root. Both apps' vite.config.js read this as
+      # `BASE_PATH` and fall back to `/` when it's unset (plain local dev).
+      # Computed from the actual repo name (not hardcoded) so a future
+      # rename — CLAUDE.md flags the current name as provisional — needs no
+      # edit here.
+      - name: Resolve GitHub Pages base path
+        id: base
+        run: echo "path=/${GITHUB_REPOSITORY#*/}" >> "$GITHUB_OUTPUT"
+
+      # apps/public never talks to the Worker or GitHub OAuth (ADR-001:
+      # "Frontend público no consume el Worker en absoluto") — only the two
+      # public, unsigned Cloudinary values. Both are already known/non-secret
+      # (see CLAUDE.md "Estado actual"); the `vars.*` lookup lets the repo
+      # override them later without editing this file, but the fallback
+      # keeps the build working today.
+      - name: Build apps/public
+        working-directory: apps/public
+        env:
+          BASE_PATH: ${{ steps.base.outputs.path }}
+          VITE_CLOUDINARY_CLOUD_NAME: ${{ vars.VITE_CLOUDINARY_CLOUD_NAME || 'r5f0ztqc' }}
+          VITE_CLOUDINARY_UPLOAD_PRESET: ${{ vars.VITE_CLOUDINARY_UPLOAD_PRESET || 'foto_frase' }}
+        run: npm run build
+
+      # apps/backoffice needs the repo (known), the OAuth App's client_id and
+      # the Worker's public URL — the latter two don't exist yet (see
+      # docs/deploy/RUNBOOK.md): they come from GitHub Actions "variables"
+      # (Settings > Secrets and variables > Actions > Variables tab, NOT
+      # secrets — neither value is sensitive) that the user fills in once
+      # both prerequisites are deployed. Until then this builds with them
+      # empty, matching each composable's own `isConfigured` guard (shows a
+      # "missing config" message instead of crashing).
+      - name: Build apps/backoffice
+        working-directory: apps/backoffice
+        env:
+          BASE_PATH: ${{ steps.base.outputs.path }}
+          VITE_GITHUB_REPO: ${{ vars.VITE_GITHUB_REPO || 'fpuricelli/foto-frase' }}
+          VITE_GITHUB_OAUTH_CLIENT_ID: ${{ vars.VITE_GITHUB_OAUTH_CLIENT_ID }}
+          VITE_WORKER_BASE_URL: ${{ vars.VITE_WORKER_BASE_URL }}
+        run: npm run build
+
+      # Combine both dist/ into one artifact: public app at the root,
+      # backoffice under /backoffice/. GitHub Pages serves ONLY a single
+      # root 404.html for the whole site (verified: nested 404.html files
+      # under a subpath are never used, unlike Netlify-style hosts) — so a
+      # per-app 404.html copy would silently never fire for /backoffice/**
+      # deep links. docs/deploy/404.html is a small shared script that
+      # inspects the URL to tell which of the two apps it belongs to and
+      # redirects to THAT app's own index.html; each app's index.html then
+      # restores the real path (inline script) before its Vue Router boots.
+      - name: Combine build output
+        run: |
+          set -euo pipefail
+          rm -rf site
+          mkdir -p site/backoffice
+          cp -r apps/public/dist/. site/
+          cp -r apps/backoffice/dist/. site/backoffice/
+          touch site/.nojekyll
+          cp docs/deploy/404.html site/404.html
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+  deploy:
+    name: Publish to GitHub Pages
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

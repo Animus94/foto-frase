@@ -47,10 +47,22 @@ function serveCampaignData() {
   }
 }
 
-// Public app is served at the root of the single GitHub Pages site (ADR-003);
-// the backoffice app owns the '/backoffice/' subpath instead.
+// Public app is served at the root of the single GitHub Pages site (ADR-003)
+// — "root of the site", not necessarily of the domain: this repo isn't named
+// `<user>.github.io` and has no custom domain (docs/deploy/RUNBOOK.md), so
+// by default GitHub Pages serves it as a project page under
+// `/<repo>/` (deploy-engineer task: "Configuración de base ... para el
+// subpath de GitHub Pages"). deploy-pages.yml sets BASE_PATH to that repo
+// subpath (computed from the actual repo name, so a future rename — see
+// CLAUDE.md's "Nombre provisorio" note — needs no edit here); locally
+// (`vite dev`/`vite build` without BASE_PATH) it falls back to plain '/'.
+// The backoffice app owns this same prefix + '/backoffice/' instead
+// (its own vite.config.js).
+const outerBase = process.env.BASE_PATH ?? ''
+const base = `${outerBase}/`
+
 export default defineConfig({
-  base: '/',
+  base,
   plugins: [
     vue(),
     serveCampaignData(),
@@ -71,8 +83,10 @@ export default defineConfig({
         theme_color: '#358e3d',
         background_color: '#358e3d',
         display: 'standalone',
-        start_url: '/',
-        scope: '/',
+        // Explicit (not left to the plugin's own base-derived default) so
+        // it's obvious at a glance that these track the subpath above.
+        start_url: base,
+        scope: base,
         icons: [
           { src: 'pwa-192x192.png', sizes: '192x192', type: 'image/png', purpose: 'any' },
           { src: 'pwa-512x512.png', sizes: '512x512', type: 'image/png', purpose: 'any' },

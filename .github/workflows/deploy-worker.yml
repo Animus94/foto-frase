@@ -1,0 +1,61 @@
+name: Deploy Worker
+
+# ADR-001/ADR-003: worker/ is a separate Cloudflare Worker, not part of the
+# Vite/GitHub Pages build. It has its own pipeline, triggered only by
+# changes under worker/** (or manually), so unrelated app changes never
+# redeploy it.
+on:
+  push:
+    branches: [main]
+    paths:
+      - "worker/**"
+      - ".github/workflows/deploy-worker.yml"
+  workflow_dispatch: {}
+
+jobs:
+  deploy:
+    name: Deploy Cloudflare Worker
+    runs-on: ubuntu-latest
+    concurrency:
+      group: deploy-worker
+      cancel-in-progress: false
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install worker dependencies
+        working-directory: worker
+        run: npm install
+
+      - name: Type-check worker
+        working-directory: worker
+        run: npm run typecheck
+
+      # Deploys with `wrangler deploy` and, before that, loads the two
+      # Cloudinary secrets into the Worker with `wrangler secret put` (one
+      # call per name listed under `secrets:`, reading each value from the
+      # matching entry in this step's `env:` block — see docs/deploy/RUNBOOK.md).
+      # CLOUDINARY_API_KEY/CLOUDINARY_API_SECRET here are the Worker's own
+      # Cloudflare secrets (ADR-001 §B) — confirm with the user whether they
+      # reuse the same GitHub Actions secrets apps/public might already have,
+      # or need to be created fresh (apps/public only ever used the public,
+      # unsigned cloud name + upload preset — never these two).
+      - name: Deploy worker (wrangler deploy + secrets)
+        uses: cloudflare/wrangler-action@v4
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          workingDirectory: worker
+          wranglerVersion: "4"
+          command: deploy
+          secrets: |
+            CLOUDINARY_API_KEY
+            CLOUDINARY_API_SECRET
+        env:
+          CLOUDINARY_API_KEY: ${{ secrets.CLOUDINARY_API_KEY }}
+          CLOUDINARY_API_SECRET: ${{ secrets.CLOUDINARY_API_SECRET }}

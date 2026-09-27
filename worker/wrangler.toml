@@ -1,0 +1,28 @@
+# Cloudflare Worker config (ADR-001). Deployed independently of GitHub Pages
+# (ADR-003) via .github/workflows/deploy-worker.yml, triggered only by
+# changes under worker/**.
+#
+# Secrets (CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET) are NEVER set here —
+# they're loaded with `wrangler secret put <NAME>` (locally) or via the
+# deploy-worker.yml workflow (from GitHub Actions secrets). See
+# docs/deploy/RUNBOOK.md.
+
+name = "foto-frase-worker"
+main = "src/index.ts"
+compatibility_date = "2024-11-01"
+
+[observability]
+enabled = true
+
+[vars]
+# owner/repo whose push permission gates moderation (ADR-001 §B). Not secret.
+GITHUB_REPO = "fpuricelli/foto-frase"
+
+# Single allowed CORS origin for the backoffice's GitHub Pages site. Not a
+# wildcard by design (ADR-001/CLAUDE.md). Update if the Pages custom domain
+# ever changes.
+ALLOWED_ORIGIN = "https://fpuricelli.github.io"
+
+# Cloudinary account used by apps/public's unsigned uploads too. Not secret
+# (same cloud name already public in apps/public's bundle).
+CLOUDINARY_CLOUD_NAME = "r5f0ztqc"

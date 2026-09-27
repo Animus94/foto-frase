@@ -10,6 +10,15 @@
       content="Sumá tu selfie o foto con una frase de adhesión al Mural de la 5ta Marcha Federal Universitaria."
     />
     <title>Mural — 5ta Marcha Federal Universitaria</title>
+    <script>
+      // Restores the real deep-linked path after the site-root 404.html
+      // redirect (docs/deploy/404.html, copied by deploy-pages.yml) — must
+      // run before Vue Router reads the URL on boot (router.js).
+      ;(function () {
+        var original = new URLSearchParams(window.location.search).get('p')
+        if (original) window.history.replaceState(null, '', original)
+      })()
+    </script>
   </head>
   <body>
     <div id="app"></div>
