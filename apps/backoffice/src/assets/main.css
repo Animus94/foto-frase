@@ -1,0 +1,153 @@
+:root {
+  --ff-green: #358e3d;
+  --ff-green-dark: #24672a;
+  --ff-ink: #1a1a1a;
+  --ff-bg: #f5f6f3;
+  --ff-danger: #b3261e;
+  --ff-warning: #a15c00;
+  color-scheme: light;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--ff-bg);
+  color: var(--ff-ink);
+  font-family:
+    system-ui,
+    -apple-system,
+    'Segoe UI',
+    Roboto,
+    sans-serif;
+}
+
+#app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  max-width: 960px;
+  margin: 0 auto;
+  background: #fff;
+  box-shadow: 0 0 24px rgba(0, 0, 0, 0.06);
+}
+
+button {
+  font: inherit;
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+.ff-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border: none;
+  border-radius: 8px;
+  padding: 0.65rem 1.25rem;
+  background: var(--ff-green);
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+.ff-button:hover:not(:disabled) {
+  background: var(--ff-green-dark);
+}
+
+.ff-button--secondary {
+  background: transparent;
+  color: var(--ff-green);
+  border: 2px solid var(--ff-green);
+}
+
+.ff-button--danger {
+  background: var(--ff-danger);
+}
+
+.ff-button--ghost {
+  background: transparent;
+  color: var(--ff-ink);
+  border: 1px solid #ccc;
+}
+
+.ff-screen {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem;
+  gap: 1.25rem;
+}
+
+.ff-error {
+  color: var(--ff-danger);
+  font-size: 0.9rem;
+}
+
+.ff-warning {
+  color: var(--ff-warning);
+  font-size: 0.9rem;
+}
+
+.ff-muted {
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.ff-card {
+  border: 1px solid #e2e2e2;
+  border-radius: 10px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.ff-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.ff-field label {
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.ff-field input,
+.ff-field textarea {
+  padding: 0.5rem 0.6rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+.ff-badge {
+  display: inline-block;
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  background: #eee;
+  color: #444;
+  width: fit-content;
+}
+
+.ff-badge--mock {
+  background: #fff3cd;
+  color: var(--ff-warning);
+}

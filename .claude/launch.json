@@ -6,9 +6,18 @@
       "runtimeExecutable": "bash",
       "runtimeArgs": [
         "-c",
-        "export PATH=\"/private/tmp/claude-501/-Users-ernandopuricelli-Documents-ARCHIVOS-DEV-Claude/08d40f12-e8d0-492c-ad5e-e1de92e187e4/scratchpad/nodejs/node-v24.21.0-darwin-arm64/bin:$PATH\" && cd /Users/ernandopuricelli/Documents/ARCHIVOS/DEV/Claude/foto-frase/apps/public && exec npm run dev -- --host 127.0.0.1 --port 5173 --strictPort"
+        "export PATH=\"$HOME/.nvm/versions/node/v24.21.0/bin:$PATH\" && cd /Users/ernandopuricelli/Documents/ARCHIVOS/DEV/Claude/foto-frase/apps/public && exec npm run dev -- --host 127.0.0.1 --port 5173 --strictPort"
       ],
       "port": 5173
+    },
+    {
+      "name": "backoffice-dev",
+      "runtimeExecutable": "bash",
+      "runtimeArgs": [
+        "-c",
+        "export PATH=\"$HOME/.nvm/versions/node/v24.21.0/bin:$PATH\" && cd /Users/ernandopuricelli/Documents/ARCHIVOS/DEV/Claude/foto-frase/apps/backoffice && exec npm run dev -- --host 127.0.0.1 --port 5174 --strictPort"
+      ],
+      "port": 5174
     }
   ]
 }
