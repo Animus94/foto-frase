@@ -106,6 +106,16 @@ export function useMuralListing(options = {}) {
     try {
       const endpoint = `https://res.cloudinary.com/${CLOUD_NAME}/image/list/${MURAL_PUBLIC_TAG}.json`
       const response = await fetch(endpoint, { cache: 'no-cache' })
+      // Cloudinary's unsigned tag-list endpoint returns 404 (not 200 with an
+      // empty array) when a tag has zero resources — verified directly
+      // against the live account. That's the normal, expected state before
+      // any submission has been approved, not a real error: treat it as an
+      // empty Mural instead of surfacing a scary error message.
+      if (response.status === 404) {
+        resources.value = []
+        writeCache([])
+        return
+      }
       if (!response.ok) {
         throw new Error(`No se pudo cargar el Mural (HTTP ${response.status})`)
       }
