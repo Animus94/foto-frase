@@ -1,0 +1,8 @@
+{
+  "name": "@foto-frase/shared",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "main": "src/index.js",
+  "description": "Constantes y formas de datos compartidas entre apps/public y apps/backoffice (tags/context de Cloudinary, esquema de phrases.json/campaign.json) — ver ADR-002 y ADR-003."
+}

@@ -1,0 +1,17 @@
+{
+  "name": "foto-frase",
+  "private": true,
+  "version": "0.0.0",
+  "description": "Monorepo del proyecto foto-frase (mural de adhesión a la 5ta Marcha Federal Universitaria).",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev:public": "npm run dev --workspace apps/public",
+    "build:public": "npm run build --workspace apps/public"
+  },
+  "allowScripts": {
+    "esbuild@0.25.12": true
+  }
+}
