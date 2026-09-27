@@ -51,7 +51,15 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           workingDirectory: worker
-          wranglerVersion: "4"
+          # Pinned to an exact version, not the bare major "4": the action's
+          # own resolution for "4" installed 4.86.0, whose peer dependency
+          # wants @cloudflare/workers-types@^4.x — conflicting (ERESOLVE, no
+          # --legacy-peer-deps) with the ^5.x already in worker/package.json.
+          # 4.142.0's peer range (^5.20260926.1) matches that dependency
+          # exactly. If worker/package.json's workers-types version is ever
+          # bumped to a new major, re-check this pin against wrangler's
+          # peerDependencies for the target version and update both together.
+          wranglerVersion: "4.142.0"
           command: deploy
           secrets: |
             CLOUDINARY_API_KEY
