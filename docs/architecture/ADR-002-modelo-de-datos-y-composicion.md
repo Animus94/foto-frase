@@ -86,9 +86,11 @@ Cloudinary o desde el Worker, no para filtrar masivamente):
   login de GitHub del admin que actuó, resuelto en ADR-001).
 
 Un rechazo **no borra** el asset de Cloudinary (se retagea a `moderation:rejected`, sin
-`mural-public`): permite deshacer un error de moderación y mantiene trazabilidad anti-abuso. La
-limpieza/retención de assets rechazados o pendientes viejos queda fuera de esta ADR (ver Riesgos
-abiertos — es una decisión de negocio, no técnica).
+`mural-public`): permite deshacer un error de moderación y mantiene trazabilidad anti-abuso.
+**Decisión del usuario**: los envíos rechazados y los pendientes viejos **quedan almacenados sin
+límite** (no hay borrado automático ni manual programado) — se archivan tal cual, dentro del plan
+Free de Cloudinary del usuario (ver punto 6 y Riesgos abiertos sobre el volumen esperado contra los
+límites de ese plan).
 
 Convención de `public_id`/carpeta: `marcha-5ta/submissions/<uuid-v4>` (uuid generado client-side),
 para evitar colisiones y mantener namespacing dentro de la cuenta de Cloudinary.
@@ -217,15 +219,16 @@ cámara):
 
 ## Riesgos abiertos
 
-- **Límite de recursos devueltos por el endpoint unsigned `list/<tag>.json`**: Cloudinary acota la
-  cantidad de recursos que este endpoint devuelve según el plan de la cuenta (documentado por
-  Cloudinary, variable según plan). Falta verificar contra el plan real de la cuenta ya existente
-  del usuario si ese tope alcanza para el volumen esperado de envíos aprobados antes del 15/10. Si
-  no alcanza, la mitigación ya queda diseñada (plan de contingencia arriba: mover el listado público
-  detrás del Worker con Search API paginada) sin cambiar el modelo de datos. **Pregunta para el
-  usuario/deploy-engineer**: confirmar plan de Cloudinary y, si hace falta, validar el tope real
-  antes de acercarse al evento.
-- **Retención de envíos rechazados/pendientes viejos**: no se define una política de borrado
-  automático (no es una restricción técnica, es una decisión de producto: ¿se quiere limpiar
-  después del evento, o dejarlo todo como archivo?). Queda como **pregunta de negocio abierta**
-  para el usuario, no bloqueante para arrancar desarrollo.
+- **Límite de recursos devueltos por el endpoint unsigned `list/<tag>.json`**: **confirmado: la
+  cuenta usada en esta etapa es plan Free de Cloudinary.** Cloudinary documenta un tope de recursos
+  devueltos por este endpoint que varía según plan y puede cambiar con el tiempo; no lo doy por
+  buena una cifra de memoria acá — queda como tarea concreta de `deploy-engineer` verificarlo contra
+  la documentación vigente de Cloudinary al momento de implementar, y validarlo empíricamente
+  (subiendo unos cuantos assets de prueba con el tag `mural-public` y confirmando que el listado los
+  devuelve todos) antes de acercarse al volumen real esperado para el 15/10. Como los rechazados y
+  pendientes **ahora se sabe que se archivan sin borrarse** (ver Decisión, punto 3), el volumen
+  total en la cuenta crece más rápido que solo los aprobados — otro motivo para validar el tope
+  temprano. El plan de contingencia ya diseñado (mover el listado público detrás del Worker con
+  Search API paginada) sigue en pie si el plan Free no alcanza.
+- **Retención de envíos rechazados/pendientes viejos**: **resuelto** — decisión del usuario: no se
+  borra nada, queda archivado sin límite de tiempo (ver Decisión, punto 3).

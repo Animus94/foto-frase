@@ -19,9 +19,11 @@ sumar mi presencia al Mural colectivo de la campaña antes del 15 de octubre.
 **Incluye:**
 
 - Acceso a la app vía QR (distribuido por distintos canales) o vía URL directa.
-- Captura de una selfie con la cámara del dispositivo.
-- Alternativa a la selfie: fotografiar un espacio de la universidad y agregarle un nombre que se
-  superpone a la imagen como texto/sticker.
+- Al ingresar, el usuario elige entre dos modos de captura, presentados como una elección inicial
+  explícita (no como dos pantallas separadas que haya que descubrir):
+  - **Selfie** — modo **por defecto** (preseleccionado).
+  - **Foto de contexto + nombre** — alternativa: fotografiar un espacio de la universidad y
+    agregarle un nombre que se superpone a la imagen como texto/sticker.
 - Selección de una frase entre una lista predefinida y administrable, bajo la consigna "Yo voy a
   la Marcha...", con las opciones dadas como ejemplo: "Con mi familia", "Con mis amigos/as", "Con
   mis compañeros/as", "Con mi comisión", "Con mis hijos".
@@ -69,7 +71,9 @@ sumar mi presencia al Mural colectivo de la campaña antes del 15 de octubre.
 ## Criterios de aceptación
 
 - [ ] El usuario puede ingresar a la app escaneando un QR o accediendo por una URL directa.
-- [ ] Al ingresar, el usuario puede tomar una selfie con la cámara del dispositivo.
+- [ ] Al ingresar, el usuario ve una elección explícita entre "Selfie" (preseleccionada por
+      defecto) y "Foto de contexto + nombre", antes de entrar a la cámara.
+- [ ] El usuario puede tomar una selfie con la cámara del dispositivo.
 - [ ] Como alternativa a la selfie, el usuario puede fotografiar un espacio de la universidad y
       agregarle un nombre que se superpone a la imagen como texto/sticker.
 - [ ] El usuario selecciona una frase de una lista predefinida y administrable, bajo la consigna
