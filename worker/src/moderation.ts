@@ -21,6 +21,11 @@ export async function listPending(request: Request, env: Env): Promise<Response>
 
   try {
     const result = await searchPending(env, cursor, DEFAULT_MAX_RESULTS)
+    // Temporary diagnostic (remove once the empty-result mystery from
+    // 2026-09-27 is confirmed/resolved): logs whether Cloudinary's Search
+    // API genuinely matched nothing, vs. matched something our mapping
+    // below then dropped.
+    console.log('searchPending raw result:', JSON.stringify(result).slice(0, 1000))
     const items = result.resources.map((resource) => ({
       public_id: resource.public_id,
       secure_url: resource.secure_url,
