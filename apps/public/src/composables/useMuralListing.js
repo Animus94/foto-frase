@@ -49,6 +49,21 @@ function writeCache(resources) {
 }
 
 /**
+ * Cloudinary's unsigned `image/list/<tag>.json` endpoint (unlike the signed
+ * Admin/Search APIs) returns only `public_id`/`version`/`format` per
+ * resource — no ready-made `url`/`secure_url` — confirmed live: the actual
+ * response never had those fields, which is why every image in the Mural
+ * rendered broken (the components read `resource.secure_url ?? resource.url`,
+ * always `undefined` here). Builds the standard delivery URL ourselves
+ * instead. The `v<version>` segment isn't optional to include — without it,
+ * a re-uploaded/updated asset could serve a stale CDN-cached copy under the
+ * same public_id.
+ */
+function buildSecureUrl(resource) {
+  return `https://res.cloudinary.com/${CLOUD_NAME}/image/upload/v${resource.version}/${resource.public_id}.${resource.format}`
+}
+
+/**
  * Deterministic order for the grid/carousel: newest first by created_at,
  * with public_id as a stable tiebreaker (ADR-002 §6).
  */
@@ -120,7 +135,11 @@ export function useMuralListing(options = {}) {
         throw new Error(`No se pudo cargar el Mural (HTTP ${response.status})`)
       }
       const payload = await response.json()
-      const sorted = sortResources(payload.resources ?? [])
+      const withUrls = (payload.resources ?? []).map((resource) => ({
+        ...resource,
+        secure_url: resource.secure_url ?? buildSecureUrl(resource),
+      }))
+      const sorted = sortResources(withUrls)
       resources.value = sorted
       writeCache(sorted)
     } catch (err) {
