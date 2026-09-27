@@ -1,10 +1,13 @@
 /**
- * Router for the foto-frase Cloudflare Worker (ADR-001). Five routes total:
+ * Router for the foto-frase Cloudflare Worker (ADR-001/ADR-004). Six routes total:
  *   POST /gh/device/code          — oauthProxy.ts, no secret
  *   POST /gh/oauth/token          — oauthProxy.ts, no secret
  *   GET  /moderation/pending      — moderation.ts, signed Cloudinary Search
  *   POST /moderation/:id/approve  — moderation.ts, signed Cloudinary tags/context
  *   POST /moderation/:id/reject   — moderation.ts, signed Cloudinary tags/context
+ *   POST /upload/sign             — uploadSign.ts, Turnstile-gated (ADR-004),
+ *                                    NOT behind authorizeModerationCaller —
+ *                                    any public visitor may call this one.
  * Anything else is a clean 404; unhandled exceptions become a generic 500 —
  * the client never sees a raw stack trace or upstream error body.
  */
@@ -13,6 +16,7 @@ import type { Env } from './types'
 import { corsHeaders, withCors, jsonError } from './http'
 import { forwardDeviceCode, forwardAccessToken } from './oauthProxy'
 import { listPending, moderate } from './moderation'
+import { signUpload } from './uploadSign'
 
 const MODERATION_ACTION_PATTERN = /^\/moderation\/([^/]+)\/(approve|reject)$/
 
@@ -35,6 +39,14 @@ export default {
 
       if (pathname === '/moderation/pending' && request.method === 'GET') {
         return withCors(await listPending(request, env), env)
+      }
+
+      // ADR-004: deliberately NOT wrapped by authorizeModerationCaller
+      // (github.ts) — this route's caller is any public visitor of
+      // apps/public, not the admin. Authorization here is Turnstile alone,
+      // checked inside signUpload itself.
+      if (pathname === '/upload/sign' && request.method === 'POST') {
+        return withCors(await signUpload(request, env), env)
       }
 
       const moderationMatch = MODERATION_ACTION_PATTERN.exec(pathname)

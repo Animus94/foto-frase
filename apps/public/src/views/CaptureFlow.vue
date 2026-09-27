@@ -93,7 +93,7 @@ function shareMural() {
   })
 }
 
-async function handleSubmit() {
+async function handleSubmit(turnstileToken) {
   submitError.value = null
 
   // Re-check right before the network call: never rely on Cloudinary to
@@ -113,6 +113,9 @@ async function handleSubmit() {
       // REQ-002 §1/§2: collected (and now drawn) for both variants.
       stickerName: stickerName.value,
       deviceId: deviceSubmissions.deviceId.value,
+      // ADR-004: the Cloudflare Turnstile token ConsentStep.vue's widget
+      // just completed — required by the Worker's /upload/sign route.
+      turnstileToken,
     })
     deviceSubmissions.recordSubmission({
       public_id: result.publicId,

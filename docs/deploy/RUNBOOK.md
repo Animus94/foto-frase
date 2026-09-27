@@ -151,6 +151,49 @@ tener que:
 No hace falta que hagas nada acá si vas a usar el dominio de
 `fpuricelli.github.io` tal cual — ya está configurado.
 
+## Paso 7 — Widget de Cloudflare Turnstile (ADR-004)
+
+Esto es lo que reemplaza el upload "unsigned" de la app pública: antes de
+subir cada foto, el navegador del usuario tiene que resolver un desafío
+anti-bot invisible (o casi invisible) de Cloudflare Turnstile. Sin esto
+configurado, la app pública puede seguir mostrando el Mural y armando la
+frase, pero el botón **"Enviar"** del último paso queda deshabilitado
+siempre (la propia app avisa que falta esta configuración).
+
+1. En el dashboard de Cloudflare (la misma cuenta del Paso 1), buscá
+   **"Turnstile"** en el menú lateral izquierdo, o andá directo a
+   <https://dash.cloudflare.com/?to=/:account/turnstile>.
+2. Botón **"Add site"** (o **"Add widget"** según la versión de la consola).
+3. Completá el formulario:
+   - **Site name**: algo reconocible, ej. "foto-frase".
+   - **Domain**: `fpuricelli.github.io` (el mismo origen ya fijado como
+     `ALLOWED_ORIGIN` en `worker/wrangler.toml` — ver Paso 6). Si en algún
+     momento se suma un dominio propio, hay que volver acá y agregarlo
+     también, además de actualizar `ALLOWED_ORIGIN`.
+   - **Widget mode**: elegí **"Managed"** (el modo recomendado por
+     Cloudflare para la mayoría de los casos: deja que Turnstile decida solo
+     si necesita mostrarle algo al usuario o resolverlo de forma invisible;
+     no hace falta "Invisible" ni "Non-interactive" para este proyecto).
+4. Click **"Create"** (o "Add").
+5. La página del widget recién creado muestra dos valores:
+   - **Site Key**: es pública (va en el HTML/JS que se sirve al navegador,
+     no hay forma de ocultarla ni falta hacerlo).
+   - **Secret Key**: es privada — nunca debe pegarse en ningún archivo del
+     repo ni en el bundle de ninguna app.
+6. En GitHub (el repo `foto-frase`):
+   - Pestaña **Variables**, creá `VITE_TURNSTILE_SITE_KEY` → el **Site Key**
+     del paso 5.
+   - Pestaña **Secrets**, creá `TURNSTILE_SECRET_KEY` → el **Secret Key**
+     del paso 5.
+7. Con ambos valores ya cargados, hace falta un redeploy de **ambas**
+   partes para que tomen efecto (mismo motivo que el resto de las variables
+   de este runbook: solo se leen en tiempo de build/deploy, no en runtime):
+   - Workflow **"Deploy Worker"** (toma `TURNSTILE_SECRET_KEY`).
+   - Workflow **"Deploy Pages"** (toma `VITE_TURNSTILE_SITE_KEY` para el
+     build de `apps/public`).
+   - Ambos se disparan manualmente desde la pestaña **Actions** con
+     **"Run workflow"**, igual que en el Paso 4.
+
 ---
 
 ## Orden recomendado (por las dependencias circulares)
@@ -180,11 +223,22 @@ Los pasos de arriba tienen un orden que conviene respetar la primera vez:
    habilitarlo es el que efectivamente publica el sitio.
 6. **Paso 6** — solo aplica si en el futuro sumás un dominio propio; con la
    config actual (subdominio `github.io`) no requiere ninguna acción extra.
+7. **Paso 7** (Turnstile) — independiente, podés hacerlo en cualquier
+   momento; no bloquea nada de lo anterior. Pero hasta que esté hecho (y se
+   haya vuelto a correr "Deploy Worker" + "Deploy Pages" después de cargar
+   sus dos valores), el botón "Enviar" de la app pública queda
+   deshabilitado — el resto de la app (Mural, armado de frase) funciona
+   igual sin este paso.
 
 ## Cómo verificar que quedó funcionando
 
 - **App pública**: abrí `https://fpuricelli.github.io/foto-frase/` — debería
-  cargar la pantalla de captura. `https://fpuricelli.github.io/foto-frase/mural`
+  cargar la pantalla de captura. En el último paso (confirmación), debería
+  aparecer el widget de Turnstile y el botón "Enviar" habilitarse recién
+  cuando lo resuelve (además de tildar el checkbox de consentimiento) — si el
+  Paso 7 todavía no está hecho, el botón queda siempre deshabilitado con un
+  aviso explícito en vez de romper el resto del flujo.
+  `https://fpuricelli.github.io/foto-frase/mural`
   (deep link directo, no navegando desde la home) debería mostrar el Mural,
   no un 404 de GitHub.
 - **Backoffice**: abrí

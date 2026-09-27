@@ -1,11 +1,11 @@
-# Cloudflare Worker config (ADR-001). Deployed independently of GitHub Pages
-# (ADR-003) via .github/workflows/deploy-worker.yml, triggered only by
-# changes under worker/**.
+# Cloudflare Worker config (ADR-001/ADR-004). Deployed independently of
+# GitHub Pages (ADR-003) via .github/workflows/deploy-worker.yml, triggered
+# only by changes under worker/**.
 #
-# Secrets (CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET) are NEVER set here —
-# they're loaded with `wrangler secret put <NAME>` (locally) or via the
-# deploy-worker.yml workflow (from GitHub Actions secrets). See
-# docs/deploy/RUNBOOK.md.
+# Secrets (CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, TURNSTILE_SECRET_KEY)
+# are NEVER set here — they're loaded with `wrangler secret put <NAME>`
+# (locally) or via the deploy-worker.yml workflow (from GitHub Actions
+# secrets). See docs/deploy/RUNBOOK.md.
 
 name = "foto-frase-worker"
 main = "src/index.ts"

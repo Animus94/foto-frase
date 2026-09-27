@@ -54,18 +54,27 @@ jobs:
         id: base
         run: echo "path=/${GITHUB_REPOSITORY#*/}" >> "$GITHUB_OUTPUT"
 
-      # apps/public never talks to the Worker or GitHub OAuth (ADR-001:
-      # "Frontend público no consume el Worker en absoluto") — only the two
-      # public, unsigned Cloudinary values. Both are already known/non-secret
-      # (see CLAUDE.md "Estado actual"); the `vars.*` lookup lets the repo
-      # override them later without editing this file, but the fallback
-      # keeps the build working today.
+      # ADR-004 superseded ADR-001's "Frontend público no consume el Worker en
+      # absoluto": apps/public now signs every upload through the Worker's
+      # `/upload/sign` route (Turnstile-gated), replacing the old unsigned
+      # upload-preset flow — so it needs VITE_WORKER_BASE_URL (same Worker URL
+      # already used by apps/backoffice below) and the new, still-empty
+      # VITE_TURNSTILE_SITE_KEY (public site key, not the Turnstile secret —
+      # that one is a Worker-only secret, see deploy-worker.yml). Cloud name
+      # is already known/non-secret (see CLAUDE.md "Estado actual"); the
+      # `vars.*` lookup lets the repo override any of these later without
+      # editing this file. VITE_CLOUDINARY_UPLOAD_PRESET is gone: ADR-004
+      # removes the unsigned-upload code path entirely, so that var is no
+      # longer read by anything (the Cloudinary upload preset itself should
+      # also be disabled/deleted on Cloudinary's side — see this task's
+      # final report).
       - name: Build apps/public
         working-directory: apps/public
         env:
           BASE_PATH: ${{ steps.base.outputs.path }}
           VITE_CLOUDINARY_CLOUD_NAME: ${{ vars.VITE_CLOUDINARY_CLOUD_NAME || 'r5f0ztqc' }}
-          VITE_CLOUDINARY_UPLOAD_PRESET: ${{ vars.VITE_CLOUDINARY_UPLOAD_PRESET || 'foto_frase' }}
+          VITE_WORKER_BASE_URL: ${{ vars.VITE_WORKER_BASE_URL }}
+          VITE_TURNSTILE_SITE_KEY: ${{ vars.VITE_TURNSTILE_SITE_KEY }}
         run: npm run build
 
       # apps/backoffice needs the repo (known), the OAuth App's client_id and

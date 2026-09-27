@@ -53,20 +53,29 @@ jobs:
       # own documented non-interactive auth mechanism (no `wrangler login`
       # needed in CI). `wrangler secret bulk` (no filename argument) reads a
       # JSON object of secrets from stdin — confirmed via `wrangler secret
-      # bulk --help` — so the two Cloudinary values never touch a shell
-      # command line or a temp file, only piped stdin built from `env:` below.
-      - name: Set Cloudinary secrets on the Worker
+      # bulk --help` — so these values never touch a shell command line or a
+      # temp file, only piped stdin built from `env:` below.
+      #
+      # TURNSTILE_SECRET_KEY (ADR-004) follows the exact same pattern as the
+      # two Cloudinary secrets — it doesn't exist as a GitHub Actions secret
+      # yet (see docs/deploy/RUNBOOK.md's new Turnstile step): until the user
+      # creates it there, this resolves to an empty string and `wrangler
+      # secret bulk` sets it to that, same as any other not-yet-configured
+      # secret in this repo.
+      - name: Set Cloudinary/Turnstile secrets on the Worker
         working-directory: worker
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           CLOUDINARY_API_KEY: ${{ secrets.CLOUDINARY_API_KEY }}
           CLOUDINARY_API_SECRET: ${{ secrets.CLOUDINARY_API_SECRET }}
+          TURNSTILE_SECRET_KEY: ${{ secrets.TURNSTILE_SECRET_KEY }}
         run: |
           node -e '
             process.stdout.write(JSON.stringify({
               CLOUDINARY_API_KEY: process.env.CLOUDINARY_API_KEY,
               CLOUDINARY_API_SECRET: process.env.CLOUDINARY_API_SECRET,
+              TURNSTILE_SECRET_KEY: process.env.TURNSTILE_SECRET_KEY,
             }));
           ' | npx wrangler secret bulk
 

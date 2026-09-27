@@ -15,4 +15,11 @@ export interface Env {
   CLOUDINARY_API_KEY: string
   /** Cloudflare secret — set with `wrangler secret put CLOUDINARY_API_SECRET`. */
   CLOUDINARY_API_SECRET: string
+  /**
+   * Cloudflare secret — set with `wrangler secret put TURNSTILE_SECRET_KEY`
+   * (ADR-004). Gates `POST /upload/sign`: validated against
+   * `https://challenges.cloudflare.com/turnstile/v0/siteverify`, never sent
+   * to or readable by the client.
+   */
+  TURNSTILE_SECRET_KEY: string
 }
