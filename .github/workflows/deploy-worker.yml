@@ -36,34 +36,41 @@ jobs:
         working-directory: worker
         run: npm run typecheck
 
-      # Deploys with `wrangler deploy` and, before that, loads the two
-      # Cloudinary secrets into the Worker with `wrangler secret put` (one
-      # call per name listed under `secrets:`, reading each value from the
-      # matching entry in this step's `env:` block — see docs/deploy/RUNBOOK.md).
-      # CLOUDINARY_API_KEY/CLOUDINARY_API_SECRET here are the Worker's own
-      # Cloudflare secrets (ADR-001 §B) — confirm with the user whether they
-      # reuse the same GitHub Actions secrets apps/public might already have,
-      # or need to be created fresh (apps/public only ever used the public,
-      # unsigned cloud name + upload preset — never these two).
-      - name: Deploy worker (wrangler deploy + secrets)
-        uses: cloudflare/wrangler-action@v4
-        with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          workingDirectory: worker
-          # Pinned to an exact version, not the bare major "4": the action's
-          # own resolution for "4" installed 4.86.0, whose peer dependency
-          # wants @cloudflare/workers-types@^4.x — conflicting (ERESOLVE, no
-          # --legacy-peer-deps) with the ^5.x already in worker/package.json.
-          # 4.142.0's peer range (^5.20260926.1) matches that dependency
-          # exactly. If worker/package.json's workers-types version is ever
-          # bumped to a new major, re-check this pin against wrangler's
-          # peerDependencies for the target version and update both together.
-          wranglerVersion: "4.142.0"
-          command: deploy
-          secrets: |
-            CLOUDINARY_API_KEY
-            CLOUDINARY_API_SECRET
+      # cloudflare/wrangler-action@v4's own `wranglerVersion` pinning didn't
+      # take effect in practice (its internal install kept resolving
+      # wrangler@4.86.0 regardless — an ERESOLVE conflict against the
+      # ^5.x @cloudflare/workers-types already required by
+      # worker/package.json, ran and confirmed twice). Using our own
+      # `npx wrangler`, already installed by "Install worker dependencies"
+      # above at the exact version worker/package.json pins (verified
+      # locally: clean install + `wrangler deploy --dry-run`), removes that
+      # third-party action's version-resolution behavior from the deploy
+      # path entirely instead of continuing to fight it blind.
+      #
+      # CLOUDFLARE_API_TOKEN/CLOUDFLARE_ACCOUNT_ID as env vars are wrangler's
+      # own documented non-interactive auth mechanism (no `wrangler login`
+      # needed in CI). `wrangler secret bulk` (no filename argument) reads a
+      # JSON object of secrets from stdin — confirmed via `wrangler secret
+      # bulk --help` — so the two Cloudinary values never touch a shell
+      # command line or a temp file, only piped stdin built from `env:` below.
+      - name: Set Cloudinary secrets on the Worker
+        working-directory: worker
         env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           CLOUDINARY_API_KEY: ${{ secrets.CLOUDINARY_API_KEY }}
           CLOUDINARY_API_SECRET: ${{ secrets.CLOUDINARY_API_SECRET }}
+        run: |
+          node -e '
+            process.stdout.write(JSON.stringify({
+              CLOUDINARY_API_KEY: process.env.CLOUDINARY_API_KEY,
+              CLOUDINARY_API_SECRET: process.env.CLOUDINARY_API_SECRET,
+            }));
+          ' | npx wrangler secret bulk
+
+      - name: Deploy worker
+        working-directory: worker
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: npx wrangler deploy
