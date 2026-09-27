@@ -73,10 +73,24 @@ export async function moderate(request: Request, env: Env, publicId: string, act
 }
 
 function cloudinaryErrorMessage(err: unknown, fallback: string): string {
-  // Cloudinary's own error detail is logged server-side (index.ts catches
-  // and logs), never forwarded verbatim to the client.
-  if (err instanceof CloudinaryApiError && err.status === 404) {
-    return 'El envío no existe en Cloudinary (public_id incorrecto o ya fue eliminado manualmente).'
+  // The raw Cloudinary error body is logged server-side only (visible via
+  // `wrangler tail` or the Cloudflare dashboard's Logs for this Worker) —
+  // this correction replaces a stale comment that claimed index.ts's
+  // top-level catch already did this; it doesn't, since these two callers
+  // (listPending/moderate) catch the error themselves and never rethrow it.
+  if (err instanceof CloudinaryApiError) {
+    console.error('Cloudinary API error:', err.status, err.message)
+    if (err.status === 404) {
+      return 'El envío no existe en Cloudinary (public_id incorrecto o ya fue eliminado manualmente).'
+    }
+    if (err.status === 401 || err.status === 403) {
+      return `${fallback} Cloudinary respondió ${err.status}: la API key/secret del Worker no tiene permiso suficiente (revisar el rol asignado a esa Access Key en Cloudinary).`
+    }
+    // Any other Cloudinary-side status: still safe to surface the bare
+    // number (not the response body) so this is diagnosable without digging
+    // through Worker logs for the common cases.
+    return `${fallback} Cloudinary respondió HTTP ${err.status}.`
   }
+  console.error('Unexpected error calling Cloudinary:', err)
   return fallback
 }
