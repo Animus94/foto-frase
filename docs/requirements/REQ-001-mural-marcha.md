@@ -32,10 +32,28 @@ sumar mi presencia al Mural colectivo de la campaña antes del 15 de octubre.
   el Mural público (para evitar fakes o malas intenciones).
 - Web pública del Mural, con URL propia, que muestra los envíos ya aprobados en dos formatos:
   - (a) carrusel/"carrete" que va pasando las fotos.
-  - (b) grilla de "casilleros" que se completan a medida que llegan envíos.
-- Uso del logo oficial ya disponible en el repo
-  (`docs/assets/branding/logo-5ta-marcha-federal.png`) en la app y/o el Mural (alcance exacto: ver
-  pregunta abierta).
+  - (b) grilla de "casilleros" que se completan a medida que llegan envíos, hasta una cantidad
+    máxima **X** por grilla (valor exacto: ver pregunta abierta); al superarse esa cantidad, se
+    habilita otra grilla a la que se accede scrolleando.
+- Límite de **4 envíos por persona/dispositivo**, para evitar spam de un mismo usuario.
+- Si el admin rechaza un envío: no se le notifica al usuario y no tiene una vía de reintento sobre
+  ese mismo envío (queda descartado en silencio).
+- Consentimiento: checkbox obligatorio antes de poder enviar, con el texto exacto: *"Al enviar el
+  post acepto que la imagen será publicada en una web de acceso público."*
+- El Mural público es accesible por cualquiera que tenga la URL, sin ningún control de acceso.
+- La app deja de aceptar envíos después del 15/10 (fecha de la marcha) — alcance exacto de "deja de
+  funcionar" (¿solo se bloquea el envío, o se da de baja también la web del Mural?): ver pregunta
+  abierta.
+- Marca de agua obligatoria sobre **toda** foto subida (selfie o alternativa): el logo oficial
+  (`docs/assets/branding/logo-5ta-marcha-federal.png`) + el texto "#Yo voy", superpuestos como
+  marca de agua — el propósito explícito es que la imagen no pueda reutilizarse sin esa marca si
+  alguien la descarga o la scrapea, por lo que la marca de agua tiene que quedar **incorporada a la
+  imagen que se sube**, no solo mostrada como overlay en la página del Mural.
+- Leyenda "Yo voy a la Marcha... <frase elegida>" superpuesta sobre la imagen, ubicada al pie para
+  no tapar el centro de la foto.
+- Para la alternativa sin selfie, el nombre que el usuario agrega se superpone también sobre la
+  imagen (sticker), con un límite de 20 caracteres y sujeto a la misma moderación de contenido que
+  la imagen.
 
 **No incluye:**
 
@@ -68,7 +86,19 @@ sumar mi presencia al Mural colectivo de la campaña antes del 15 de octubre.
       envíos aprobados.
 - [ ] En esa web, el Mural puede visualizarse como carrusel que va pasando las fotos aprobadas.
 - [ ] En esa misma web, el Mural puede visualizarse también como grilla de casilleros que se van
-      completando a medida que hay envíos aprobados.
+      completando a medida que hay envíos aprobados, y al llegar a la cantidad máxima X por grilla
+      se habilita una grilla siguiente accesible scrolleando.
+- [ ] Toda foto subida (selfie o alternativa) queda con el logo oficial + el texto "#Yo voy" como
+      marca de agua incorporada a la propia imagen, y con la leyenda "Yo voy a la Marcha... <frase>"
+      superpuesta al pie.
+- [ ] En la alternativa sin selfie, el nombre agregado por el usuario se superpone a la imagen,
+      respeta un máximo de 20 caracteres y es moderado junto con la imagen.
+- [ ] El sistema impide un 5º envío desde la misma persona/dispositivo (límite de 4).
+- [ ] Un envío rechazado por el admin no genera ningún aviso al usuario ni una vía de reintento
+      sobre ese envío.
+- [ ] El checkbox de consentimiento muestra exactamente el texto: "Al enviar el post acepto que la
+      imagen será publicada en una web de acceso público."
+- [ ] Después del 15/10 la app deja de aceptar nuevos envíos.
 
 ## Restricciones aplicables
 
@@ -81,6 +111,12 @@ sumar mi presencia al Mural colectivo de la campaña antes del 15 de octubre.
   privilegiadas de moderación (listar pendientes, aprobar/rechazar) dependen del mecanismo que
   `architect` defina para no exponer el API Secret de Cloudinary — este REQ da por sentado que ese
   mecanismo existirá, pero no lo especifica.
+- **Sin base de datos propia, aplicado al límite de 4 envíos por dispositivo y al corte del
+  15/10**: sin un backend con estado, ambos controles solo pueden aplicarse del lado del cliente
+  (ej. algo guardado en el propio dispositivo, y una comparación de fecha en el propio código). Esto
+  es best-effort: alguien que borre los datos de su navegador o use otro dispositivo puede volver a
+  enviar. `architect` debe dejar constancia de esta limitación, no inventar una solución que
+  requiera servidor propio para "cerrarla" del todo.
 
 ## Supuestos
 
@@ -94,32 +130,27 @@ Marcados explícitamente como supuestos del analista, no como decisiones del usu
    son captura en vivo con la cámara del dispositivo, y que **no** existe una opción de subir una
    foto ya existente desde la galería del dispositivo — el usuario habló de "sacarse una selfie" y
    "sacar una foto", no de adjuntar un archivo.
-4. Se asume que la frase elegida ("Yo voy a la Marcha... + opción") queda asociada al envío y se
-   muestra junto con la foto en el Mural, aunque el mecanismo visual exacto (si va como texto
-   superpuesto sobre la imagen, como caption debajo, etc.) no fue definido por el usuario — ver
-   pregunta abierta agregada al final.
+4. Resuelto: la frase va como texto superpuesto sobre la imagen, al pie, para no tapar el centro
+   de la foto.
+5. Se asume que "no se avisa al usuario" ante un rechazo (respuesta del usuario: "NO") implica
+   también que no hay ninguna vía de reintento sobre ese envío puntual — la persona simplemente
+   podría volver a intentar como un envío nuevo, dentro del límite general de 4 envíos por
+   dispositivo. Si esto no es lo que se quiso decir, hay que corregirlo.
+6. Se asume que la marca de agua (logo + "#Yo voy") y la leyenda de la frase se aplican sobre la
+   imagen en el momento de armar el envío, antes de subirla a Cloudinary (composición del lado del
+   cliente), ya que el propósito explícito es que la marca de agua viaje con la imagen aunque se
+   descargue — el mecanismo técnico exacto lo define `architect`/`frontend-developer`, esto solo
+   fija el resultado esperado.
 
 ## Preguntas abiertas
 
-Estas preguntas surgen directamente de lo que el usuario contó y no fueron resueltas por él; se
-listan tal cual para repreguntarle:
+La mayoría de las preguntas originales quedaron resueltas por el usuario (ver Alcance, Criterios de
+aceptación y Supuestos). Quedan pendientes solo estas dos:
 
-1. ¿El logo de la marcha se superpone como marca/frame sobre cada foto que se sube al Mural, o es
-   solo material de branding para la UI de la app (splash, header, etc.)?
-2. ¿La grilla de "casilleros" tiene una cantidad fija de casilleros (por ejemplo, representando un
-   objetivo de X asistentes) o crece sin límite a medida que llegan envíos?
-3. ¿Qué pasa con un envío rechazado por el admin? ¿Se le avisa al usuario? ¿Puede reintentar?
-4. ¿La lista de frases predefinidas admite además una opción de texto libre, o es estrictamente de
-   opción múltiple cerrada?
-5. ¿Cuál es el límite de caracteres y la validación de contenido para el nombre que se superpone
-   como sticker en la alternativa sin selfie (moderación de texto libre, no solo de imagen)?
-6. ¿Hay algún límite de envíos por persona/dispositivo, para evitar spam de un mismo usuario?
-7. ¿Cuál es el texto exacto que se le muestra al usuario para el consentimiento? (¿Hace falta
-   aceptar términos y condiciones formales, uso de imagen con fines de la campaña, etc.?)
-8. ¿Hasta cuándo queda funcionando la app: solo hasta el 15/10, o sigue después como archivo del
-   evento?
-9. ¿El Mural público (carrusel + grilla) es accesible por cualquiera con la URL, o requiere algún
-   tipo de acceso?
-10. *(Adicional, detectada por el analista)* ¿Cómo se muestra la frase elegida junto a la foto en
-    el Mural — como texto superpuesto sobre la imagen, como caption/leyenda debajo, solo visible al
-    tocar la foto, u otra forma?
+1. **Valor exacto de X**: ¿cuántos casilleros entran en cada grilla del Mural antes de pasar a la
+   siguiente (scrolleando)? Necesario para que `architect`/`frontend-developer` puedan diseñar el
+   layout.
+2. **Alcance exacto del corte del 15/10**: la app "no sigue funcionando" después de esa fecha —
+   ¿esto significa que solo se bloquean los envíos nuevos pero el Mural público sigue visible como
+   archivo del evento, o que la web entera (incluido el Mural) se da de baja? Afecta si
+   `deploy-engineer` tiene que programar algo para esa fecha o no.
