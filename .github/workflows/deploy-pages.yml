@@ -72,7 +72,7 @@ jobs:
         working-directory: apps/public
         env:
           BASE_PATH: ${{ steps.base.outputs.path }}
-          VITE_CLOUDINARY_CLOUD_NAME: ${{ vars.VITE_CLOUDINARY_CLOUD_NAME || 'r5f0ztqc' }}
+          VITE_CLOUDINARY_CLOUD_NAME: ${{ vars.VITE_CLOUDINARY_CLOUD_NAME || 'yl7b8vmh' }}
           VITE_WORKER_BASE_URL: ${{ vars.VITE_WORKER_BASE_URL }}
           VITE_TURNSTILE_SITE_KEY: ${{ vars.VITE_TURNSTILE_SITE_KEY }}
         run: npm run build
