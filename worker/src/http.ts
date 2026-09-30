@@ -7,9 +7,16 @@ import type { Env } from './types'
  * if it doesn't match the page's actual origin, so there's no need (and no
  * safe way) to reflect an arbitrary request Origin header back.
  */
-export function corsHeaders(env: Env): Record<string, string> {
+export function corsHeaders(env: Env, request?: Request): Record<string, string> {
+  let origin = env.ALLOWED_ORIGIN
+  if (request) {
+    const reqOrigin = request.headers.get('Origin')
+    if (reqOrigin && (reqOrigin === env.ALLOWED_ORIGIN || /^https?:\/\/localhost(:\d+)?$/.test(reqOrigin))) {
+      origin = reqOrigin
+    }
+  }
   return {
-    'Access-Control-Allow-Origin': env.ALLOWED_ORIGIN,
+    'Access-Control-Allow-Origin': origin,
     'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
     'Access-Control-Allow-Headers': 'Content-Type, Authorization',
     'Access-Control-Max-Age': '86400',
@@ -18,9 +25,9 @@ export function corsHeaders(env: Env): Record<string, string> {
 }
 
 /** Returns a new Response with CORS headers merged in, preserving the body/status. */
-export function withCors(response: Response, env: Env): Response {
+export function withCors(response: Response, env: Env, request?: Request): Response {
   const headers = new Headers(response.headers)
-  for (const [key, value] of Object.entries(corsHeaders(env))) {
+  for (const [key, value] of Object.entries(corsHeaders(env, request))) {
     headers.set(key, value)
   }
   return new Response(response.body, {

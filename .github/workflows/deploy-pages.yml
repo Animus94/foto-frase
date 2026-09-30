@@ -89,7 +89,7 @@ jobs:
         working-directory: apps/backoffice
         env:
           BASE_PATH: ${{ steps.base.outputs.path }}
-          VITE_GITHUB_REPO: ${{ vars.VITE_GITHUB_REPO || 'fpuricelli/foto-frase' }}
+          VITE_GITHUB_REPO: ${{ vars.VITE_GITHUB_REPO || github.repository }}
           VITE_GITHUB_OAUTH_CLIENT_ID: ${{ vars.VITE_GITHUB_OAUTH_CLIENT_ID }}
           VITE_WORKER_BASE_URL: ${{ vars.VITE_WORKER_BASE_URL }}
         run: npm run build

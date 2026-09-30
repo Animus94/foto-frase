@@ -25,20 +25,20 @@ export default {
     const { pathname } = new URL(request.url)
 
     if (request.method === 'OPTIONS') {
-      return new Response(null, { status: 204, headers: corsHeaders(env) })
+      return new Response(null, { status: 204, headers: corsHeaders(env, request) })
     }
 
     try {
       if (pathname === '/gh/device/code' && request.method === 'POST') {
-        return withCors(await forwardDeviceCode(request), env)
+        return withCors(await forwardDeviceCode(request), env, request)
       }
 
       if (pathname === '/gh/oauth/token' && request.method === 'POST') {
-        return withCors(await forwardAccessToken(request), env)
+        return withCors(await forwardAccessToken(request), env, request)
       }
 
       if (pathname === '/moderation/pending' && request.method === 'GET') {
-        return withCors(await listPending(request, env), env)
+        return withCors(await listPending(request, env), env, request)
       }
 
       // ADR-004: deliberately NOT wrapped by authorizeModerationCaller
@@ -46,7 +46,7 @@ export default {
       // apps/public, not the admin. Authorization here is Turnstile alone,
       // checked inside signUpload itself.
       if (pathname === '/upload/sign' && request.method === 'POST') {
-        return withCors(await signUpload(request, env), env)
+        return withCors(await signUpload(request, env), env, request)
       }
 
       const moderationMatch = MODERATION_ACTION_PATTERN.exec(pathname)
@@ -64,13 +64,13 @@ export default {
         const body = await request
           .json<{ context?: Record<string, string> }>()
           .catch(() => ({}) as { context?: Record<string, string> })
-        return withCors(await moderate(request, env, publicId, action, body.context ?? {}), env)
+        return withCors(await moderate(request, env, publicId, action, body.context ?? {}), env, request)
       }
 
-      return withCors(jsonError(404, 'Ruta no encontrada.'), env)
+      return withCors(jsonError(404, 'Ruta no encontrada.'), env, request)
     } catch (err) {
       console.error('Unhandled worker error:', err)
-      return withCors(jsonError(500, 'Error interno del Worker.'), env)
+      return withCors(jsonError(500, 'Error interno del Worker.'), env, request)
     }
   },
 } satisfies ExportedHandler<Env>

@@ -16,13 +16,13 @@ enabled = true
 
 [vars]
 # owner/repo whose push permission gates moderation (ADR-001 §B). Not secret.
-GITHUB_REPO = "fpuricelli/foto-frase"
+GITHUB_REPO = "Animus94/foto-frase"
 
 # Single allowed CORS origin for the backoffice's GitHub Pages site. Not a
 # wildcard by design (ADR-001/CLAUDE.md). Update if the Pages custom domain
 # ever changes.
-ALLOWED_ORIGIN = "https://fpuricelli.github.io"
+ALLOWED_ORIGIN = "https://animus94.github.io"
 
 # Cloudinary account used by apps/public's unsigned uploads too. Not secret
 # (same cloud name already public in apps/public's bundle).
-CLOUDINARY_CLOUD_NAME = "r5f0ztqc"
+CLOUDINARY_CLOUD_NAME = "yl7b8vmh"
