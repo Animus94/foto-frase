@@ -13,7 +13,7 @@
  */
 
 import type { Env } from './types'
-import { corsHeaders, withCors, jsonError, , jsonResponse } from './http'
+import { corsHeaders, withCors, jsonError, jsonResponse } from './http'
 import { forwardDeviceCode, forwardAccessToken } from './oauthProxy'
 import { listPending, moderate } from './moderation'
 import { signUpload } from './uploadSign'
