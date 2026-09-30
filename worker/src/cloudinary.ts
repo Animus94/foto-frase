@@ -121,3 +121,20 @@ export async function updateResourceTagsAndContext(
 function escapeContextValue(value: string): string {
   return value.replace(/\\/g, '\\\\').replace(/\|/g, '\\|').replace(/=/g, '\\=')
 }
+
+/**
+ * Obtiene las imágenes aprobadas con la etiqueta "mural-public" (Público, sin Auth)
+ */
+export async function searchPublicMural(
+  env: CloudinaryEnv,
+  cursor: string | null = null,
+  maxResults = 50,
+): Promise {
+  return cloudinaryPost(env, '/resources/search', {
+    expression: 'tags:"mural-public"',
+    max_results: maxResults,
+    with_field: ['context', 'tags'],
+    sort_by: [{ created_at: 'desc' }],
+    ...(cursor ? { next_cursor: cursor } : {}),
+  })
+}

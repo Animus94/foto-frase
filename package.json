@@ -11,7 +11,8 @@
     "dev:public": "npm run dev --workspace apps/public",
     "build:public": "npm run build --workspace apps/public",
     "dev:backoffice": "npm run dev --workspace apps/backoffice",
-    "build:backoffice": "npm run build --workspace apps/backoffice"
+    "build:backoffice": "npm run build --workspace apps/backoffice",
+    "deploy": "powershell -ExecutionPolicy Bypass -File scripts/deploy.ps1"
   },
   "allowScripts": {
     "esbuild@0.25.12": true

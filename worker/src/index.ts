@@ -13,10 +13,11 @@
  */
 
 import type { Env } from './types'
-import { corsHeaders, withCors, jsonError } from './http'
+import { corsHeaders, withCors, jsonError, , jsonResponse } from './http'
 import { forwardDeviceCode, forwardAccessToken } from './oauthProxy'
 import { listPending, moderate } from './moderation'
 import { signUpload } from './uploadSign'
+import { searchPublicMural } from './cloudinary'
 
 const MODERATION_ACTION_PATTERN = /^\/moderation\/([^/]+)\/(approve|reject)$/
 
@@ -29,6 +30,19 @@ export default {
     }
 
     try {
+
+      // Nueva ruta pública para tu frontend en GitHub Pages
+      if ((pathname === '/' || pathname === '/murales') && request.method === 'GET') {
+        const url = new URL(request.url)
+        const cursor = url.searchParams.get('cursor')
+        const result = await searchPublicMural(env, cursor)
+        
+        return withCors(jsonResponse({
+          resources: result.resources,
+          next_cursor: result.next_cursor ?? null
+        }), env, request)
+      }
+
       if (pathname === '/gh/device/code' && request.method === 'POST') {
         return withCors(await forwardDeviceCode(request), env, request)
       }
