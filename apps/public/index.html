@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="es">
+<html lang="es" class="dark">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/png" href="/favicon-64x64.png" />
@@ -10,18 +10,42 @@
       content="Sumá tu selfie o foto con una frase de adhesión al Mural de la 5ta Marcha Federal Universitaria."
     />
     <title>Mural — 5ta Marcha Federal Universitaria</title>
+
+    <!-- Fuente Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
     <script>
-      // Restores the real deep-linked path after the site-root 404.html
-      // redirect (docs/deploy/404.html, copied by deploy-pages.yml) — must
-      // run before Vue Router reads the URL on boot (router.js).
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            colors: {
+              brand: {
+                500: '#358e3d',
+                600: '#2b7532',
+              }
+            }
+          }
+        }
+      }
+    </script>
+
+    <script>
       ;(function () {
         var original = new URLSearchParams(window.location.search).get('p')
         if (original) window.history.replaceState(null, '', original)
       })()
     </script>
+    <style>
+      body { font-family: 'Inter', system-ui, -apple-system, sans-serif; }
+    </style>
   </head>
-  <body>
-    <div id="app"></div>
+  <body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col antialiased selection:bg-emerald-500 selection:text-white">
+    <div id="app" class="flex flex-col min-h-screen"></div>
     <script type="module" src="/src/main.js"></script>
   </body>
 </html>

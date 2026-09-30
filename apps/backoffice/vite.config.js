@@ -15,7 +15,7 @@ import vue from '@vitejs/plugin-vue'
 const outerBase = process.env.BASE_PATH ?? ''
 
 export default defineConfig({
-  base: `${outerBase}/backoffice/`,
+  base: '/',
   plugins: [vue()],
   resolve: {
     alias: {

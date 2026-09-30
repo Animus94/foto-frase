@@ -6,56 +6,31 @@ const { needRefresh, reloadForUpdate } = usePwaUpdate()
 </script>
 
 <template>
-  <header class="ff-header">
-    <RouterLink to="/" class="ff-header__brand">Mural 5ta Marcha</RouterLink>
-    <RouterLink to="/mural" class="ff-header__link">Ver Mural</RouterLink>
-  </header>
+  <div id="app" class="min-h-screen w-full flex flex-col bg-slate-950 text-slate-100 overflow-x-hidden">
+    <!-- Header Fijo Superior -->
+    <header class="sticky top-0 z-50 bg-slate-900/90 backdrop-blur-md border-b border-slate-800/80 px-4 md:px-8 py-3 flex items-center justify-between shrink-0">
+      <RouterLink to="/" class="text-emerald-400 font-extrabold text-lg hover:text-emerald-300 transition-colors">
+        Mural 5ta Marcha 🇦🇷
+      </RouterLink>
+      <nav class="flex items-center gap-4">
+        <RouterLink to="/mural" class="text-slate-300 hover:text-emerald-400 font-medium text-sm transition-colors">
+          Ver Mural
+        </RouterLink>
+        <RouterLink to="/carrusel" class="text-slate-300 hover:text-emerald-400 font-medium text-sm transition-colors">
+          Carrusel
+        </RouterLink>
+      </nav>
+    </header>
 
-  <div v-if="needRefresh" class="ff-update-banner">
-    <span>Hay una versión nueva de la app.</span>
-    <button type="button" class="ff-button" @click="reloadForUpdate">Actualizar</button>
+    <!-- Notificación PWA -->
+    <div v-if="needRefresh" class="bg-cyan-950 border-b border-cyan-700 px-4 py-2 text-center text-xs text-cyan-200 flex items-center justify-center gap-3 shrink-0">
+      <span>Nueva versión disponible.</span>
+      <button @click="reloadForUpdate" class="bg-cyan-400 text-slate-950 font-bold px-3 py-1 rounded-lg text-xs">Actualizar</button>
+    </div>
+
+    <!-- Main sin restricción de ancho -->
+    <main class="flex-1 w-full flex flex-col min-h-0">
+      <RouterView />
+    </main>
   </div>
-
-  <RouterView />
 </template>
-
-<style scoped>
-.ff-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0.75rem 1.25rem;
-  background: var(--ff-green);
-  color: #fff;
-}
-
-.ff-header__brand {
-  color: #fff;
-  font-weight: 800;
-  text-decoration: none;
-  font-size: 1rem;
-}
-
-.ff-header__link {
-  color: #fff;
-  text-decoration: underline;
-  font-size: 0.9rem;
-}
-
-.ff-update-banner {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.75rem;
-  padding: 0.6rem 1.25rem;
-  background: #fff7e0;
-  color: #5c4a00;
-  font-size: 0.85rem;
-  border-bottom: 1px solid #e8d68a;
-}
-
-.ff-update-banner .ff-button {
-  flex-shrink: 0;
-  padding: 0.35rem 0.9rem;
-}
-</style>

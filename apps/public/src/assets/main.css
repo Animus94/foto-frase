@@ -1,88 +1,12 @@
-:root {
-  --ff-green: #358e3d;
-  --ff-green-dark: #24672a;
-  --ff-ink: #1a1a1a;
-  --ff-bg: #f5f6f3;
-  --ff-danger: #b3261e;
-  color-scheme: light;
-}
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-* {
-  box-sizing: border-box;
-}
-
-html,
-body {
+html, body, #app {
   margin: 0;
   padding: 0;
-  background: var(--ff-bg);
-  color: var(--ff-ink);
-  font-family:
-    system-ui,
-    -apple-system,
-    'Segoe UI',
-    Roboto,
-    sans-serif;
-}
-
-#app {
+  width: 100%;
   min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  max-width: 480px;
-  margin: 0 auto;
-  background: #fff;
-  box-shadow: 0 0 24px rgba(0, 0, 0, 0.06);
-}
-
-button {
-  font: inherit;
-  cursor: pointer;
-}
-
-button:disabled {
-  cursor: not-allowed;
-  opacity: 0.55;
-}
-
-.ff-button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  border: none;
-  border-radius: 999px;
-  padding: 0.85rem 1.5rem;
-  background: var(--ff-green);
-  color: #fff;
-  font-weight: 700;
-  font-size: 1rem;
-}
-
-.ff-button:hover:not(:disabled) {
-  background: var(--ff-green-dark);
-}
-
-.ff-button--secondary {
-  background: transparent;
-  color: var(--ff-green);
-  border: 2px solid var(--ff-green);
-}
-
-.ff-screen {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  padding: 1.25rem;
-  gap: 1rem;
-}
-
-.ff-error {
-  color: var(--ff-danger);
-  font-size: 0.9rem;
-}
-
-.ff-muted {
-  color: #666;
-  font-size: 0.9rem;
+  background-color: #020617; /* slate-950 */
+  color: #f1f5f9;
 }

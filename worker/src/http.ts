@@ -7,14 +7,25 @@ import type { Env } from './types'
  * if it doesn't match the page's actual origin, so there's no need (and no
  * safe way) to reflect an arbitrary request Origin header back.
  */
-export function corsHeaders(env: Env, request?: Request): Record<string, string> {
-  let origin = env.ALLOWED_ORIGIN
+export function corsHeaders(env: Env, request?: Request): Record {
+  // Lista de sitios autorizados
+  const allowedOrigins = [
+
+    env.ALLOWED_ORIGIN                    // Por si tienes otra URL definida
+  ].filter(Boolean)
+
+  let origin = 'https://mural-backoffice.pages.dev'
+
   if (request) {
     const reqOrigin = request.headers.get('Origin')
-    if (reqOrigin && (reqOrigin === env.ALLOWED_ORIGIN || /^https?:\/\/localhost(:\d+)?$/.test(reqOrigin))) {
-      origin = reqOrigin
+    if (reqOrigin) {
+      const isAllowed = allowedOrigins.includes(reqOrigin) || /^https?:\/\/localhost(:\d+)?$/.test(reqOrigin)
+      if (isAllowed) {
+        origin = reqOrigin
+      }
     }
   }
+
   return {
     'Access-Control-Allow-Origin': origin,
     'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
