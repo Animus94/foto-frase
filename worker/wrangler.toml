@@ -21,7 +21,7 @@ GITHUB_REPO = "Animus94/foto-frase"
 # Single allowed CORS origin for the backoffice's GitHub Pages site. Not a
 # wildcard by design (ADR-001/CLAUDE.md). Update if the Pages custom domain
 # ever changes.
-ALLOWED_ORIGIN = "https://mural-backoffice.pages.dev"
+ALLOWED_ORIGIN = "https://animus94.github.io"
 
 # Cloudinary account used by apps/public's unsigned uploads too. Not secret
 # (same cloud name already public in apps/public's bundle).

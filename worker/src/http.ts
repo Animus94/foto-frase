@@ -14,7 +14,7 @@ export function corsHeaders(env: Env, request?: Request): Record<string, string>
     env.ALLOWED_ORIGIN                    // Por si tienes otra URL definida
   ].filter(Boolean)
 
-  let origin = 'https://mural-backoffice.pages.dev'
+  let origin = 'https://animus94.github.io'
 
   if (request) {
     const reqOrigin = request.headers.get('Origin')
