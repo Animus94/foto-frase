@@ -21,15 +21,13 @@ const upload = useCloudinaryUpload()
 const share = useShare()
 
 const step = ref('mode')
-const mode = ref(VARIANTS.SELFIE)
+const mode = ref('camera') // 'camera' or 'gallery'
 const stickerName = ref('')
 const capturedFrame = ref(null)
 const composed = ref(null)
 const selectedPhraseId = ref(null)
 const consentChecked = ref(false)
 const submitError = ref(null)
-
-const facingMode = computed(() => (mode.value === VARIANTS.SELFIE ? 'user' : 'environment'))
 
 onMounted(() => {
   phrases.load()
@@ -64,7 +62,7 @@ async function handlePhraseContinue() {
       source: capturedFrame.value.source,
       sourceWidth: capturedFrame.value.width,
       sourceHeight: capturedFrame.value.height,
-      variant: mode.value,
+      variant: VARIANTS.SELFIE,
       phrasePrefix: phrases.prefix.value,
       phraseLabel,
       stickerName: stickerName.value,
@@ -97,7 +95,7 @@ async function handleSubmit(turnstileToken) {
     const phraseText = phrases.resolvePhraseText(selectedPhraseId.value)
     const result = await upload.uploadSubmission({
       blob: composed.value.blob,
-      variant: mode.value,
+      variant: VARIANTS.SELFIE,
       phraseId: selectedPhraseId.value,
       phraseText,
       stickerName: stickerName.value,
@@ -146,8 +144,9 @@ async function handleSubmit(turnstileToken) {
 
       <CameraCapture
         v-else-if="step === 'camera'"
-        :facing-mode="facingMode"
-        :mirror-preview="mode === VARIANTS.SELFIE"
+        facing-mode="user"
+        :mode="mode"
+        :mirror-preview="mode === 'camera'"
         @captured="handleCaptured"
       />
 

@@ -11,41 +11,41 @@
     <div class="flex flex-col gap-3">
       <label 
         class="flex gap-3.5 items-start p-4 rounded-xl border transition-all cursor-pointer"
-        :class="modelValue === 'selfie' 
+        :class="modelValue === 'camera' 
           ? 'bg-emerald-950/80 border-emerald-600 shadow-md shadow-emerald-950/50' 
           : 'bg-slate-950/60 border-slate-800 hover:border-slate-700'"
       >
         <input
           type="radio"
           name="capture-mode"
-          value="selfie"
-          :checked="modelValue === 'selfie'"
+          value="camera"
+          :checked="modelValue === 'camera'"
           class="mt-1 accent-cyan-400"
-          @change="emit('update:modelValue', 'selfie')"
+          @change="emit('update:modelValue', 'camera')"
         />
         <div>
-          <strong class="text-cyan-300 block text-sm font-bold">Selfie personal</strong>
+          <strong class="text-cyan-300 block text-sm font-bold">Sacarse una selfie</strong>
           <p class="text-xs text-slate-300 mt-0.5">Capturá una foto con la cámara frontal.</p>
         </div>
       </label>
 
       <label 
         class="flex gap-3.5 items-start p-4 rounded-xl border transition-all cursor-pointer"
-        :class="modelValue === 'alternative' 
+        :class="modelValue === 'gallery' 
           ? 'bg-emerald-950/80 border-emerald-600 shadow-md shadow-emerald-950/50' 
           : 'bg-slate-950/60 border-slate-800 hover:border-slate-700'"
       >
         <input
           type="radio"
           name="capture-mode"
-          value="alternative"
-          :checked="modelValue === 'alternative'"
+          value="gallery"
+          :checked="modelValue === 'gallery'"
           class="mt-1 accent-cyan-400"
-          @change="emit('update:modelValue', 'alternative')"
+          @change="emit('update:modelValue', 'gallery')"
         />
         <div>
-          <strong class="text-cyan-300 block text-sm font-bold">Foto de lugar / grupo + nombre</strong>
-          <p class="text-xs text-slate-300 mt-0.5">Fotografiá tu universidad, cartel o bandera.</p>
+          <strong class="text-cyan-300 block text-sm font-bold">Subir foto de la galería</strong>
+          <p class="text-xs text-slate-300 mt-0.5">Elegí una foto que ya tengas guardada.</p>
         </div>
       </label>
     </div>
@@ -70,7 +70,7 @@
       :disabled="!canContinue" 
       @click="emit('continue')"
     >
-      Continuar a la cámara
+      Continuar
     </button>
   </section>
 </template>
