@@ -7,7 +7,7 @@ import type { Env } from './types'
  * if it doesn't match the page's actual origin, so there's no need (and no
  * safe way) to reflect an arbitrary request Origin header back.
  */
-export function corsHeaders(env: Env, request?: Request): Record {
+export function corsHeaders(env: Env, request?: Request): Record<string, string> {
   // Lista de sitios autorizados
   const allowedOrigins = [
 
