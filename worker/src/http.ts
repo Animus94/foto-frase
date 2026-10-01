@@ -10,8 +10,9 @@ import type { Env } from './types'
 export function corsHeaders(env: Env, request?: Request): Record<string, string> {
   // Lista de sitios autorizados
   const allowedOrigins = [
-
-    env.ALLOWED_ORIGIN                    // Por si tienes otra URL definida
+    'https://animus94.github.io',
+    'https://mural-backoffice.pages.dev',
+    env.ALLOWED_ORIGIN
   ].filter(Boolean)
 
   let origin = 'https://animus94.github.io'
