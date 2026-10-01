@@ -17,22 +17,32 @@ const emit = defineEmits(['update:modelValue', 'continue'])
     <p v-if="loading" class="ff-muted">Cargando frases…</p>
     <p v-else-if="error" class="ff-error">{{ error }}</p>
 
-    <ul v-else class="ff-phrase-list">
+    <ul v-else class="flex flex-col gap-3 mt-4">
       <li v-for="option in options" :key="option.id">
-        <label class="ff-phrase-option" :class="{ 'is-selected': modelValue === option.id }">
+        <label 
+          class="flex items-center gap-3 p-4 border-2 rounded-xl cursor-pointer transition-all"
+          :class="modelValue === option.id ? 'border-cyan-400 bg-cyan-950/30' : 'border-slate-800 bg-slate-900'"
+        >
           <input
             type="radio"
             name="phrase-option"
             :value="option.id"
             :checked="modelValue === option.id"
+            class="accent-cyan-400"
             @change="emit('update:modelValue', option.id)"
           />
-          {{ option.label }}
+          <span class="text-slate-200 font-medium">{{ option.label }}</span>
         </label>
       </li>
     </ul>
 
-    <button class="ff-button" :disabled="!modelValue" @click="emit('continue')">Continuar</button>
+    <button 
+      class="w-full mt-6 bg-cyan-500 hover:bg-cyan-400 disabled:opacity-40 text-slate-950 font-bold py-3 px-4 rounded-xl transition-all shadow-lg" 
+      :disabled="!modelValue" 
+      @click="emit('continue')"
+    >
+      Continuar
+    </button>
   </section>
 </template>
 

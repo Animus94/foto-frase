@@ -49,30 +49,31 @@ defineExpose({ CONSENT_TEXT })
 
     <img :src="previewUrl" alt="Vista previa de tu envío compuesto" class="ff-preview" />
 
-    <label class="ff-consent">
+    <label class="flex gap-3 items-start p-4 bg-slate-900 border border-slate-700 rounded-xl mt-4 cursor-pointer">
       <input
         type="checkbox"
         :checked="modelValue"
+        class="mt-1 accent-cyan-400 w-4 h-4"
         @change="emit('update:modelValue', $event.target.checked)"
       />
-      <span>{{ CONSENT_TEXT }}</span>
+      <span class="text-sm text-slate-300 leading-tight">{{ CONSENT_TEXT }}</span>
     </label>
 
-    <div v-if="turnstile.isConfigured" ref="turnstileContainer" class="ff-turnstile"></div>
-    <p v-else class="ff-muted">
+    <div v-if="turnstile.isConfigured" ref="turnstileContainer" class="flex justify-center my-4"></div>
+    <p v-else class="text-xs text-rose-400 mt-4 bg-rose-950/40 p-3 rounded-lg border border-rose-900">
       Verificación anti-bot todavía no configurada (falta VITE_TURNSTILE_SITE_KEY) — el envío queda
       deshabilitado hasta que se complete esa configuración (ver docs/deploy/RUNBOOK.md).
     </p>
 
-    <p v-if="turnstile.error.value" class="ff-error">{{ turnstile.error.value }}</p>
-    <p v-if="error" class="ff-error">{{ error }}</p>
+    <p v-if="turnstile.error.value" class="text-xs text-rose-400 mt-2">{{ turnstile.error.value }}</p>
+    <p v-if="error" class="text-xs text-rose-400 mt-2">{{ error }}</p>
 
-    <div class="ff-actions">
-      <button class="ff-button ff-button--secondary" :disabled="submitting" @click="emit('retake')">
-        Volver a sacar la foto
-      </button>
-      <button class="ff-button" :disabled="!canSubmit" @click="handleSubmit">
+    <div class="flex flex-col gap-3 mt-6">
+      <button class="w-full bg-cyan-500 hover:bg-cyan-400 disabled:opacity-40 disabled:cursor-not-allowed text-slate-950 font-bold py-3 px-4 rounded-xl transition-all shadow-lg" :disabled="!canSubmit" @click="handleSubmit">
         {{ submitting ? 'Enviando…' : 'Enviar' }}
+      </button>
+      <button class="w-full bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold py-3 px-4 rounded-xl transition-all" :disabled="submitting" @click="emit('retake')">
+        Volver a sacar la foto
       </button>
     </div>
   </section>
