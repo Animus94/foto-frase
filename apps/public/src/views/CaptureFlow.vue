@@ -107,8 +107,8 @@ async function handleSubmit(turnstileToken) {
       submitted_at: result.submittedAt,
     })
     step.value = 'done'
-  } catch {
-    submitError.value = upload.error.value
+  } catch (err) {
+    submitError.value = upload.error.value || (err instanceof Error ? err.message : String(err))
   }
 }
 </script>
