@@ -129,7 +129,8 @@ export function useModerationApi(options = {}) {
         error.value = { kind: 'config', message: 'Falta VITE_WORKER_BASE_URL en la configuración (ver .env.example).' }
         return
       }
-      const url = new URL(`${WORKER_BASE_URL}/moderation/pending`)
+      const endpoint = tab === 'pending' ? '/moderation/pending' : '/moderation/approved'
+      const url = new URL(`${WORKER_BASE_URL}${endpoint}`)
       if (!reset && cursor.value) url.searchParams.set('cursor', cursor.value)
       const response = await fetch(url, { headers: authHeaders() })
       if (response.status === 401 || response.status === 403) {
