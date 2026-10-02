@@ -14,9 +14,9 @@ export function useAdminCloudinaryUpload() {
       if (!WORKER_BASE_URL) throw new Error("Falta configuracion VITE_WORKER_BASE_URL")
 
       // 1. Get signature from worker
-      const signRes = await fetch(\\/upload/admin/sign\, {
+      const signRes = await fetch(WORKER_BASE_URL + '/upload/admin/sign', {
         method: 'POST',
-        headers: { 'Authorization': \Bearer \\ }
+        headers: { 'Authorization': 'Bearer ' + token.value }
       })
       if (!signRes.ok) {
         throw new Error('No autorizado para subir marcos.')
@@ -33,7 +33,7 @@ export function useAdminCloudinaryUpload() {
       formData.append('tags', signatureData.tags)
       formData.append('folder', signatureData.folder)
 
-      const uploadRes = await fetch(\https://api.cloudinary.com/v1_1/\/image/upload\, {
+      const uploadRes = await fetch('https://api.cloudinary.com/v1_1/' + signatureData.cloudName + '/image/upload', {
         method: 'POST',
         body: formData
       })
