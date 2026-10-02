@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="es" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/png" href="/foto-frase/favicon-64x64.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#358e3d" />
+    <meta
+      name="description"
+      content="Sumá tu selfie o foto con una frase de adhesión al Mural de la 5ta Marcha Federal Universitaria."
+    />
+    <title>Mural — 5ta Marcha Federal Universitaria</title>
+
+    <!-- Fuente Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            colors: {
+              brand: {
+                500: '#358e3d',
+                600: '#2b7532',
+              }
+            }
+          }
+        }
+      }
+    </script>
+
+    <script>
+      ;(function () {
+        var original = new URLSearchParams(window.location.search).get('p')
+        if (original) window.history.replaceState(null, '', original)
+      })()
+    </script>
+    <style>
+      body { font-family: 'Inter', system-ui, -apple-system, sans-serif; }
+    </style>
+    <script type="module" crossorigin src="/foto-frase/assets/index-8V5irMQv.js"></script>
+    <link rel="stylesheet" crossorigin href="/foto-frase/assets/index-DyfHBMo9.css">
+  <link rel="manifest" href="/foto-frase/manifest.webmanifest"></head>
+  <body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col antialiased selection:bg-emerald-500 selection:text-white">
+    <div id="app" class="flex flex-col min-h-screen"></div>
+  </body>
+</html>
