@@ -2,5 +2,12 @@
   "version": 1,
   "submissionsCloseAt": "2026-10-15T23:59:59-03:00",
   "maxSubmissionsPerDevice": 6,
-  "gridPageSize": 100
+  "gridPageSize": 100,
+  "marcos": [
+    {
+      "id": "marco-1790913438399",
+      "label": "Marco Sudhur",
+      "url": "https://res.cloudinary.com/yl7b8vmh/image/upload/v1790913438/marcos/marcos/frame-2ipo739t.png"
+    }
+  ]
 }
