@@ -5,7 +5,7 @@ import vue from '@vitejs/plugin-vue'
 const outerBase = process.env.BASE_PATH ?? ''
 
 export default defineConfig({
-  base: process.env.IS_CLOUDFLARE_PAGES ? '/' : \\/backoffice/\.replace(/\/\//g, '/'),
+  base: process.env.IS_CLOUDFLARE_PAGES ? '/' : `${outerBase}/backoffice/`.replace(/\/\//g, '/'),
   plugins: [vue()],
   resolve: {
     alias: {
