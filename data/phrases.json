@@ -2,10 +2,30 @@
   "version": 1,
   "prefix": "Yo voy a la Marcha...",
   "options": [
-    { "id": "familia", "label": "Con mi familia", "active": true },
-    { "id": "amigos", "label": "Con mis amigos/as", "active": true },
-    { "id": "companeros", "label": "Con mis compañeros/as", "active": true },
-    { "id": "comision", "label": "Con mi comisión", "active": true },
-    { "id": "hijos", "label": "Con mis hijos", "active": true }
+    {
+      "id": "familia",
+      "label": "Con mi familia",
+      "active": true
+    },
+    {
+      "id": "amigos",
+      "label": "Con mis amigos/as",
+      "active": true
+    },
+    {
+      "id": "companeros",
+      "label": "Con mis compañeros/as",
+      "active": true
+    },
+    {
+      "id": "comision",
+      "label": "Con mis alumnos",
+      "active": true
+    },
+    {
+      "id": "hijos",
+      "label": "Con mis hijos",
+      "active": true
+    }
   ]
 }
