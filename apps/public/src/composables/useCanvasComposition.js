@@ -33,6 +33,17 @@ function loadCompositionFont() {
 }
 
 /** Loads the official campaign logo image exactly once. */
+
+function loadMarcoImage(url) {
+  return new Promise((resolve, reject) => {
+    const img = new Image()
+    img.crossOrigin = 'anonymous'
+    img.onload = () => resolve(img)
+    img.onerror = () => reject(new Error('No se pudo cargar el marco'))
+    img.src = url
+  })
+}
+
 function loadLogoImage() {
   if (!logoLoadPromise) {
     logoLoadPromise = new Promise((resolve, reject) => {
@@ -85,7 +96,11 @@ export function useCanvasComposition() {
     try {
       const sanitizedStickerName = sanitizeStickerName(stickerName, STICKER_MAX_LENGTH)
 
-      const [, logo] = await Promise.all([loadCompositionFont(), loadLogoImage()])
+      const [, logo, marcoImg] = await Promise.all([
+          loadCompositionFont(),
+          loadLogoImage(),
+          marco?.url ? loadMarcoImage(marco.url) : Promise.resolve(null)
+        ])
 
       const { width, height } = computeScaledDimensions(sourceWidth, sourceHeight, MAX_SIDE)
       const canvas = document.createElement('canvas')
@@ -94,6 +109,9 @@ export function useCanvasComposition() {
       const ctx = canvas.getContext('2d')
 
       drawBasePhoto(ctx, source, width, height, mirror)
+      if (marcoImg) {
+        ctx.drawImage(marcoImg, 0, 0, width, height)
+      }
       drawCaptionStripe(ctx, width, height, phrasePrefix, phraseLabel)
       const { pillWidth: watermarkPillWidth } = drawWatermark(ctx, width, height, logo)
       // REQ-002 §1/§2: no longer gated by variant — draw it for selfie too,

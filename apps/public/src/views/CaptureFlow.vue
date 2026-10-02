@@ -66,6 +66,7 @@ async function handlePhraseContinue() {
       phrasePrefix: phrases.prefix.value,
       phraseLabel,
       stickerName: stickerName.value,
+      marco: capturedFrame.value.marco,
       mirror: capturedFrame.value.mirror,
     })
     step.value = 'consent'
@@ -147,6 +148,7 @@ async function handleSubmit(turnstileToken) {
         facing-mode="user"
         :mode="mode"
         :mirror-preview="mode === 'camera'"
+        :marcos="campaign.marcos.value"
         @captured="handleCaptured"
       />
 

@@ -10,6 +10,7 @@ export function useCampaign() {
   const submissionsCloseAt = ref(null)
   const maxSubmissionsPerDevice = ref(4)
   const gridPageSize = ref(100)
+  const marcos = ref([])
   const loading = ref(false)
   const error = ref(null)
 
@@ -28,6 +29,7 @@ export function useCampaign() {
       submissionsCloseAt.value = config.submissionsCloseAt ?? null
       maxSubmissionsPerDevice.value = config.maxSubmissionsPerDevice ?? 4
       gridPageSize.value = config.gridPageSize ?? 100
+      marcos.value = config.marcos ?? []
     } catch (err) {
       error.value = err instanceof Error ? err.message : String(err)
     } finally {
@@ -46,6 +48,7 @@ export function useCampaign() {
     submissionsCloseAt,
     maxSubmissionsPerDevice,
     gridPageSize,
+    marcos,
     loading,
     error,
     isClosed,

@@ -5,11 +5,22 @@ import { useCamera } from '@/composables/useCamera.js'
 const props = defineProps({
   facingMode: { type: String, default: 'user' }, // 'user' | 'environment'
   mirrorPreview: { type: Boolean, default: false },
-  mode: { type: String, default: 'camera' } // 'camera' | 'gallery'
+  mode: { type: String, default: 'camera' }, // 'camera' | 'gallery'
+  marcos: { type: Array, default: () => [] }
 })
 const emit = defineEmits(['captured'])
+const selectedMarcoIndex = ref(0)
+const selectedMarco = computed(() => props.marcos[selectedMarcoIndex.value] || null)
 
 const videoRef = ref(null)
+function nextMarco() {
+  if (props.marcos.length === 0) return;
+  selectedMarcoIndex.value = (selectedMarcoIndex.value + 1) % props.marcos.length;
+}
+function prevMarco() {
+  if (props.marcos.length === 0) return;
+  selectedMarcoIndex.value = (selectedMarcoIndex.value - 1 + props.marcos.length) % props.marcos.length;
+}
 const camera = useCamera(props.facingMode)
 
 onMounted(async () => {
@@ -26,14 +37,14 @@ function handleCapture() {
   const frame = camera.captureFrame()
   if (!frame) return
   camera.stop()
-  emit('captured', { ...frame, mirror: props.mirrorPreview })
+  emit('captured', { ...frame, mirror: props.mirrorPreview, marco: selectedMarco.value })
 }
 
 async function handleFallbackFile(event) {
   const file = event.target.files?.[0]
   if (!file) return
   const frame = await camera.loadFallbackFile(file)
-  emit('captured', { ...frame, mirror: false })
+  emit('captured', { ...frame, mirror: false, marco: selectedMarco.value })
 }
 </script>
 

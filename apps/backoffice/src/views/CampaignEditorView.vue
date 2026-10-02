@@ -100,6 +100,9 @@ onMounted(load)
           <button type="button" class="ff-button ff-button--secondary" :disabled="isUploading" @click="fileInput.click()">
             {{ isUploading ? 'Subiendo imagen...' : 'Subir nuevo marco (PNG)' }}
           </button>
+          <button type="button" class="ff-button ff-button--ghost" @click="marcos.push({ id: 'marco-' + Date.now(), label: 'Sin Marco (Base)', url: null })">
+            Agregar opcin vaca
+          </button>
         </div>
       </div>
 
