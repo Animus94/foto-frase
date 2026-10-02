@@ -16,7 +16,7 @@ import type { Env } from './types'
 import { corsHeaders, withCors, jsonError, jsonResponse } from './http'
 import { forwardDeviceCode, forwardAccessToken } from './oauthProxy'
 import { listPending, listApproved, moderate } from './moderation'
-import { signUpload } from './uploadSign'
+import { signUpload, adminSignUpload } from './uploadSign'
 import { searchPublicMural } from './cloudinary'
 
 const MODERATION_ACTION_PATTERN = /^\/moderation\/([^/]+)\/(approve|reject)$/
@@ -63,6 +63,9 @@ export default {
       // (github.ts) — this route's caller is any public visitor of
       // apps/public, not the admin. Authorization here is Turnstile alone,
       // checked inside signUpload itself.
+      if (pathname === '/upload/admin/sign' && request.method === 'POST') {
+        return withCors(await adminSignUpload(request, env), env, request)
+      }
       if (pathname === '/upload/sign' && request.method === 'POST') {
         return withCors(await signUpload(request, env), env, request)
       }

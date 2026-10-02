@@ -94,3 +94,33 @@ export async function signUpload(request: Request, env: Env): Promise<Response> 
     cloudName: env.CLOUDINARY_CLOUD_NAME,
   })
 }
+
+import { authorizeModerationCaller } from './github'
+
+export async function adminSignUpload(request: Request, env: Env): Promise<Response> {
+  const auth = await authorizeModerationCaller(request, env.GITHUB_REPO)
+  if (!auth.ok) return jsonError(auth.status, auth.message)
+
+  const timestamp = Math.floor(Date.now() / 1000).toString()
+  const randomId = Math.random().toString(36).substring(2, 10);
+  const publicId = 'marcos/frame-' + randomId;
+
+  const paramsToSign = { 
+    public_id: publicId, 
+    folder: 'marcos',
+    tags: 'marco',
+    timestamp 
+  }
+
+  const signature = await signUploadParams(paramsToSign, env.CLOUDINARY_API_SECRET)
+
+  return jsonResponse({
+    signature,
+    timestamp,
+    publicId,
+    tags: 'marco',
+    folder: 'marcos',
+    apiKey: env.CLOUDINARY_API_KEY,
+    cloudName: env.CLOUDINARY_CLOUD_NAME,
+  })
+}
