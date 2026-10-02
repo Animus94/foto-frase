@@ -131,7 +131,7 @@ export async function searchPublicMural(
   maxResults = 50,
 ): Promise<SearchPendingResult> {
   return cloudinaryPost(env, '/resources/search', {
-    expression: 'tags:"mural-public"',
+    expression: 'tags=mural-public',
     max_results: maxResults,
     with_field: ['context', 'tags'],
     sort_by: [{ created_at: 'desc' }],
