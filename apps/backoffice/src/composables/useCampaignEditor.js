@@ -64,6 +64,7 @@ export function useCampaignEditor(options = {}) {
   const submissionsCloseAt = ref('')
   const maxSubmissionsPerDevice = ref(4)
   const gridPageSize = ref(100)
+  const marcos = ref([])
   const sha = ref(null)
   const loading = ref(false)
   const saving = ref(false)
@@ -93,6 +94,7 @@ export function useCampaignEditor(options = {}) {
       submissionsCloseAt.value = data.submissionsCloseAt ?? ''
       maxSubmissionsPerDevice.value = data.maxSubmissionsPerDevice ?? 4
       gridPageSize.value = data.gridPageSize ?? 100
+      marcos.value = data.marcos ?? []
       sha.value = currentSha
     } catch (err) {
       error.value = err instanceof Error ? err.message : String(err)
@@ -114,6 +116,7 @@ export function useCampaignEditor(options = {}) {
         submissionsCloseAt: submissionsCloseAt.value,
         maxSubmissionsPerDevice: Number(maxSubmissionsPerDevice.value),
         gridPageSize: Number(gridPageSize.value),
+        marcos: marcos.value,
       }
       if (isMockSession()) {
         await new Promise((resolve) => setTimeout(resolve, 400))
@@ -139,6 +142,7 @@ export function useCampaignEditor(options = {}) {
     submissionsCloseAt,
     maxSubmissionsPerDevice,
     gridPageSize,
+    marcos,
     loading,
     saving,
     error,
