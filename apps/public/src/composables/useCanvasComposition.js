@@ -90,6 +90,7 @@ export function useCanvasComposition() {
     phraseLabel,
     stickerName,
     mirror = false,
+    marco,
   }) {
     isComposing.value = true
     error.value = null
