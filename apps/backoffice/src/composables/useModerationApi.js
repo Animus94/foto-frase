@@ -114,7 +114,7 @@ export function useModerationApi(options = {}) {
   /**
    * @param {boolean} [reset] - true for the first page / a full refresh, false to append the next page via `cursor`.
    */
-  async function loadPending(reset = true) {
+  async function loadItems(tab = 'pending', reset = true) {
     loading.value = true
     error.value = null
     try {
@@ -231,7 +231,7 @@ export function useModerationApi(options = {}) {
     hasMore,
     loading,
     error,
-    loadPending,
+    loadItems,
     approve,
     reject,
     isActionPending,

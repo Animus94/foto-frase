@@ -7,10 +7,16 @@ import SubmissionCard from '../components/SubmissionCard.vue'
 
 const router = useRouter()
 const { logout, isMockSession } = useGithubDeviceAuth()
-const { isConfigured, items, hasMore, loading, error, loadPending, approve, reject, isActionPending } =
+const { isConfigured, items, hasMore, loading, error, loadItems, approve, reject, isActionPending } =
   useModerationApi({ allowMock: true })
 
 const actionError = ref(null)
+const activeTab = ref('pending')
+
+function switchTab(tab) {
+  activeTab.value = tab
+  loadItems(tab, true)
+}
 
 async function handleApprove(submission) {
   actionError.value = null
@@ -29,16 +35,13 @@ function retryAuth() {
   router.push({ name: 'connect', query: { redirect: '/moderacion' } })
 }
 
-onMounted(() => loadPending(true))
+onMounted(() => loadItems('pending', true))
 </script>
 
 <template>
   <div class="ff-screen">
     <h1>Moderación de envíos</h1>
-    <p class="ff-muted">
-      Envíos pendientes (tag <code>moderation:pending</code>), vía el Worker de ADR-001. Aprobar
-      agrega el tag <code>mural-public</code>; rechazar solo retagea el envío, nunca lo borra.
-    </p>
+    <p class="ff-muted">Gestion� los env�os pendientes o da de baja fotos ya aprobadas.</p><div style="display: flex; gap: 1rem; margin-bottom: 2rem;"><button :class="['ff-button', activeTab === 'pending' ? 'ff-button--primary' : 'ff-button--ghost']" @click="switchTab('pending')">Pendientes</button><button :class="['ff-button', activeTab === 'approved' ? 'ff-button--primary' : 'ff-button--ghost']" @click="switchTab('approved')">Aprobadas</button></div>
 
     <p v-if="!isConfigured && !isMockSession" class="ff-warning">
       Falta configuración: <code>VITE_WORKER_BASE_URL</code> no está definida. Ver
@@ -76,7 +79,7 @@ onMounted(() => loadPending(true))
       type="button"
       class="ff-button ff-button--ghost"
       :disabled="loading"
-      @click="loadPending(false)"
+      @click="loadItems(activeTab, false)"
     >
       Cargar más
     </button>

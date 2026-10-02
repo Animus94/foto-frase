@@ -8,9 +8,30 @@
 import type { Env } from './types'
 import { jsonResponse, jsonError } from './http'
 import { authorizeModerationCaller } from './github'
-import { searchPending, updateResourceTagsAndContext, CloudinaryApiError } from './cloudinary'
+import { searchPending, searchPublicMural, updateResourceTagsAndContext, CloudinaryApiError } from './cloudinary'
 
 const DEFAULT_MAX_RESULTS = 50
+
+export async function listApproved(request: Request, env: Env): Promise<Response> {
+  const auth = await authorizeModerationCaller(request, env.GITHUB_REPO)
+  if (!auth.ok) return jsonError(auth.status, auth.message)
+
+  const url = new URL(request.url)
+  const cursor = url.searchParams.get('cursor')
+
+  try {
+    const result = await searchPublicMural(env, cursor, DEFAULT_MAX_RESULTS)
+    const items = result.resources.map((resource) => ({
+      public_id: resource.public_id,
+      secure_url: resource.secure_url,
+      created_at: resource.created_at,
+      context: resource.context?.custom ?? {},
+    }))
+    return jsonResponse({ items, next_cursor: result.next_cursor ?? null })
+  } catch (err) {
+    return jsonError(502, cloudinaryErrorMessage(err, 'No se pudo listar los envíos aprobados en Cloudinary.'))
+  }
+}
 
 export async function listPending(request: Request, env: Env): Promise<Response> {
   const auth = await authorizeModerationCaller(request, env.GITHUB_REPO)

@@ -15,7 +15,7 @@
 import type { Env } from './types'
 import { corsHeaders, withCors, jsonError, jsonResponse } from './http'
 import { forwardDeviceCode, forwardAccessToken } from './oauthProxy'
-import { listPending, moderate } from './moderation'
+import { listPending, listApproved, moderate } from './moderation'
 import { signUpload } from './uploadSign'
 import { searchPublicMural } from './cloudinary'
 
@@ -53,6 +53,10 @@ export default {
 
       if (pathname === '/moderation/pending' && request.method === 'GET') {
         return withCors(await listPending(request, env), env, request)
+      }
+
+      if (pathname === '/moderation/approved' && request.method === 'GET') {
+        return withCors(await listApproved(request, env), env, request)
       }
 
       // ADR-004: deliberately NOT wrapped by authorizeModerationCaller
