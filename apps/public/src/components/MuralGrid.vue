@@ -41,8 +41,8 @@ const qrCodeUrl = computed(() =>
               :alt="photo.sticker_name || 'Foto'" 
               class="w-full h-full object-contain block" 
             />
-            <div class="absolute bottom-0 inset-x-0 bg-gradient-to-t from-slate-950/90 via-slate-950/40 to-transparent p-2.5 flex items-end">
-              <span class="text-xs font-bold text-cyan-300 truncate">{{ photo.sticker_name || 'Anónimo' }}</span>
+            <div v-if="photo.sticker_name" class="absolute bottom-0 inset-x-0 bg-gradient-to-t from-slate-950/90 via-slate-950/40 to-transparent p-2.5 flex items-end">
+              <span class="text-xs font-bold text-cyan-300 truncate">{{ photo.sticker_name }}</span>
             </div>
           </div>
         </div>
@@ -61,8 +61,8 @@ const qrCodeUrl = computed(() =>
               :alt="photo.sticker_name || 'Foto'" 
               class="w-full h-full object-contain block" 
             />
-            <div class="absolute bottom-0 inset-x-0 bg-gradient-to-t from-slate-950/90 via-slate-950/40 to-transparent p-2.5 flex items-end">
-              <span class="text-xs font-bold text-cyan-300 truncate">{{ photo.sticker_name || 'Anónimo' }}</span>
+            <div v-if="photo.sticker_name" class="absolute bottom-0 inset-x-0 bg-gradient-to-t from-slate-950/90 via-slate-950/40 to-transparent p-2.5 flex items-end">
+              <span class="text-xs font-bold text-cyan-300 truncate">{{ photo.sticker_name }}</span>
             </div>
           </div>
         </div>
@@ -81,8 +81,8 @@ const qrCodeUrl = computed(() =>
               :alt="photo.sticker_name || 'Foto'" 
               class="w-full h-full object-contain block" 
             />
-            <div class="absolute bottom-0 inset-x-0 bg-gradient-to-t from-slate-950/90 via-slate-950/40 to-transparent p-2.5 flex items-end">
-              <span class="text-xs font-bold text-cyan-300 truncate">{{ photo.sticker_name || 'Anónimo' }}</span>
+            <div v-if="photo.sticker_name" class="absolute bottom-0 inset-x-0 bg-gradient-to-t from-slate-950/90 via-slate-950/40 to-transparent p-2.5 flex items-end">
+              <span class="text-xs font-bold text-cyan-300 truncate">{{ photo.sticker_name }}</span>
             </div>
           </div>
         </div>

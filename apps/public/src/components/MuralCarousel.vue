@@ -89,10 +89,10 @@ onBeforeUnmount(() => {
 
         <!-- Capa con gradiente y nombre -->
         <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent p-5 pt-12 flex justify-between items-end">
-          <div>
+          <div v-if="currentItem.sticker_name">
             <span class="text-[10px] uppercase font-bold tracking-widest text-emerald-400 block mb-0.5">Participante</span>
             <span class="text-base font-bold text-white tracking-wide">
-              {{ currentItem.sticker_name || 'Anónimo' }}
+              {{ currentItem.sticker_name }}
             </span>
           </div>
 
