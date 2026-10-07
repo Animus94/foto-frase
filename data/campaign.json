@@ -5,16 +5,6 @@
   "gridPageSize": 100,
   "marcos": [
     {
-      "id": "marco-1791031148859",
-      "label": "Nuevo Marco",
-      "url": "https://res.cloudinary.com/yl7b8vmh/image/upload/v1791031148/marcos/marcos/frame-yquprad9.png"
-    },
-    {
-      "id": "marco-1791032149686",
-      "label": "Nuevo Marco",
-      "url": "https://res.cloudinary.com/yl7b8vmh/image/upload/v1791032147/marcos/marcos/frame-piinkj87.png"
-    },
-    {
       "id": "marco-1791032361179",
       "label": "Sin Marco (Base)",
       "url": null
