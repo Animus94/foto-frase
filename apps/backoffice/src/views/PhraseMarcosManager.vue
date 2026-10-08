@@ -9,7 +9,7 @@ const props = defineProps({
 
 const emit = defineEmits(['add-marco', 'remove-marco', 'update-label', 'update-config'])
 
-const { uploadImage, isUploading, error: uploadError } = useAdminCloudinaryUpload()
+const { uploadFrame: uploadImage, uploading: isUploading, error: uploadError } = useAdminCloudinaryUpload()
 
 const editingMarcoId = ref(null)
 
