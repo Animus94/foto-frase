@@ -1,6 +1,7 @@
 <script setup>
 import { ref } from 'vue'
 import { useAdminCloudinaryUpload } from '../composables/useAdminCloudinaryUpload'
+import PhraseMarcoDesigner from './PhraseMarcoDesigner.vue'
 
 const props = defineProps({
   phrase: { type: Object, required: true },
@@ -9,6 +10,8 @@ const props = defineProps({
 const emit = defineEmits(['add-marco', 'remove-marco', 'update-label', 'update-config'])
 
 const { uploadImage, isUploading, error: uploadError } = useAdminCloudinaryUpload()
+
+const editingMarcoId = ref(null)
 
 async function handleFileUpload(event) {
   const file = event.target.files[0]
@@ -21,13 +24,28 @@ async function handleFileUpload(event) {
 }
 
 function remove(marcoId) {
-  if (confirm('Seguro que quers borrar este marco de esta frase?')) {
+  if (confirm('Seguro que querés borrar este marco de esta frase?')) {
     emit('remove-marco', props.phrase.id, marcoId)
   }
 }
 
 function updateLabel(marcoId, label) {
   emit('update-label', props.phrase.id, marcoId, label)
+}
+
+function openDesigner(marcoId) {
+  editingMarcoId.value = marcoId
+}
+
+function closeDesigner() {
+  editingMarcoId.value = null
+}
+
+function handleSaveConfig(newConfig) {
+  if (editingMarcoId.value) {
+    emit('update-config', props.phrase.id, editingMarcoId.value, newConfig)
+    closeDesigner()
+  }
 }
 </script>
 
@@ -47,8 +65,11 @@ function updateLabel(marcoId, label) {
             @input="updateLabel(marco.id, $event.target.value)" 
             class="ff-input-small"
           />
-          <button type="button" class="ff-button ff-button--danger" @click="remove(marco.id)">X</button>
+          <button type="button" class="ff-button ff-button--danger" style="padding:0 8px;" @click="remove(marco.id)">X</button>
         </div>
+        <button type="button" class="ff-button ff-button--secondary mt-2 w-full" style="padding:4px; font-size:0.8rem;" @click="openDesigner(marco.id)">
+          Diseñar Textos
+        </button>
       </div>
     </div>
     <div v-else class="ff-muted" style="margin-bottom: 1rem;">
@@ -61,6 +82,14 @@ function updateLabel(marcoId, label) {
         <input type="file" accept="image/png" class="hidden" @change="handleFileUpload" :disabled="isUploading" />
       </label>
     </div>
+
+    <!-- Modal Diseñador -->
+    <PhraseMarcoDesigner 
+      v-if="editingMarcoId" 
+      :marco="phrase.marcos.find(m => m.id === editingMarcoId)" 
+      @save="handleSaveConfig" 
+      @cancel="closeDesigner" 
+    />
   </div>
 </template>
 
@@ -86,7 +115,7 @@ function updateLabel(marcoId, label) {
   border: 1px solid #e5e7eb;
   border-radius: 6px;
   padding: 0.5rem;
-  width: 150px;
+  width: 170px;
 }
 
 .marco-preview {
@@ -116,4 +145,7 @@ function updateLabel(marcoId, label) {
 .hidden {
   display: none;
 }
+
+.mt-2 { margin-top: 0.5rem; }
+.w-full { width: 100%; }
 </style>
