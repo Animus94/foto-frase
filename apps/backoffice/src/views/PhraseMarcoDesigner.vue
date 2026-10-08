@@ -58,6 +58,28 @@ function startDrag(e, element) {
   window.addEventListener('touchend', upHandler)
 }
 
+function getCharStyle(i, len, curve, fontSize) {
+  const anglePerChar = curve / (len - 1 || 1)
+  const startAngle = -curve / 2
+  const angle = startAngle + i * anglePerChar
+  
+  // Approximate curve radius based on font size and length
+  const L = len * fontSize * 0.45 
+  const angleRad = (Math.abs(curve) * Math.PI) / 180
+  
+  let R = angleRad > 0.01 ? L / angleRad : 10000
+  
+  const isRainbow = curve > 0
+  const originY = isRainbow ? R : -R
+  
+  return {
+    position: 'absolute',
+    transformOrigin: `50% ${originY}px`,
+    transform: `translate(-50%, 0) rotate(${angle}deg)`,
+    display: 'inline-block'
+  }
+}
+
 function save() {
   emit('save', config.value)
 }
@@ -96,6 +118,11 @@ function cancel() {
           <div class="ff-field">
             <label>Tamaño Fuente</label>
             <input type="number" v-model.number="config.phrase.fontSize" />
+          </div>
+          <div class="ff-field">
+            <label>Curvatura (Grados)</label>
+            <input type="range" min="-180" max="180" v-model.number="config.phrase.curve" />
+            <div style="text-align:right; font-size:0.8rem; color:#666">{{ config.phrase.curve || 0 }}°</div>
           </div>
 
           <hr style="margin: 1rem 0; border: none; border-top: 1px solid #ccc;" />
@@ -143,7 +170,17 @@ function cancel() {
                    fontFamily: config.phrase.font,
                    fontSize: config.phrase.fontSize + 'px' 
                  }">
-              Yo voy a la marcha...
+              <template v-if="!config.phrase.curve || config.phrase.curve === 0">
+                Yo voy a la marcha...
+              </template>
+              <template v-else>
+                <div style="position: relative; width: 0; height: 0; display: flex; justify-content: center;">
+                  <span v-for="(char, i) in 'Yo voy a la marcha...'.split('')" :key="i"
+                        :style="getCharStyle(i, 21, config.phrase.curve, config.phrase.fontSize)">
+                    {{ char === ' ' ? '\u00A0' : char }}
+                  </span>
+                </div>
+              </template>
             </div>
             
             <!-- Nombre -->
