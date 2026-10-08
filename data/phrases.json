@@ -30,7 +30,7 @@
         {
           "id": "marco-1791502200096",
           "url": "https://res.cloudinary.com/yl7b8vmh/image/upload/v1791502199/marcos/marcos/frame-eqtc1hvy.png",
-          "label": "Nuevo Marco",
+          "label": "Universidad Publica",
           "config": {
             "phrase": {
               "x": 90,
@@ -48,6 +48,30 @@
               "bgColor": "#2a385f",
               "font": "Montserrat",
               "fontSize": 22
+            }
+          }
+        },
+        {
+          "id": "marco-1791502427968",
+          "url": "https://res.cloudinary.com/yl7b8vmh/image/upload/v1791502427/marcos/marcos/frame-4ao6q7t1.png",
+          "label": "Marco Unahur",
+          "config": {
+            "phrase": {
+              "x": 88,
+              "y": 13,
+              "color": "#32502b",
+              "font": "Bebas Neue",
+              "fontSize": 24,
+              "width": 300,
+              "curve": 110
+            },
+            "name": {
+              "x": 50,
+              "y": 99,
+              "textColor": "#000000",
+              "bgColor": "#f2e9c2",
+              "font": "Montserrat",
+              "fontSize": 20
             }
           }
         }
