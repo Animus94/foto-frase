@@ -86,6 +86,7 @@ export function useCanvasComposition() {
     sourceWidth,
     sourceHeight,
     variant,
+    phraseId,
     phrasePrefix,
     phraseLabel,
     stickerName,
@@ -121,13 +122,16 @@ export function useCanvasComposition() {
       drawBasePhoto(ctx, source, sourceWidth, sourceHeight, width, height, mirror, cropTransform)
       if (marcoImg) {
         ctx.drawImage(marcoImg, 0, 0, width, height)
+        if (marco.config) {
+          drawMarcoConfiguredText(ctx, width, height, phrasePrefix + ' ' + phraseLabel, sanitizedStickerName, marco.config)
+        }
       }
-      drawCaptionStripe(ctx, width, height, phrasePrefix, phraseLabel)
-      const { pillWidth: watermarkPillWidth } = drawWatermark(ctx, width, height, logo)
-      // REQ-002 §1/§2: no longer gated by variant — draw it for selfie too,
-      // as long as the user actually entered a name.
-      if (sanitizedStickerName) {
-        drawNameSticker(ctx, width, height, sanitizedStickerName, watermarkPillWidth)
+      if (!marcoImg && phraseId === 'amigos') {
+        drawCaptionStripe(ctx, width, height, phrasePrefix, phraseLabel)
+        const { pillWidth: watermarkPillWidth } = drawWatermark(ctx, width, height, logo)
+        if (sanitizedStickerName) {
+          drawNameSticker(ctx, width, height, sanitizedStickerName, watermarkPillWidth)
+        }
       }
 
       const blob = await new Promise((resolve, reject) => {

@@ -89,6 +89,7 @@ async function handleAdjustConfirm(cropTransform) {
       sourceWidth: capturedFrame.value.width,
       sourceHeight: capturedFrame.value.height,
       variant: VARIANTS.SELFIE,
+        phraseId: selectedPhraseId.value,
       phrasePrefix: phrases.prefix.value,
       phraseLabel,
       stickerName: stickerName.value,
@@ -99,6 +100,28 @@ async function handleAdjustConfirm(cropTransform) {
     step.value = 'consent'
   } catch {
     // composition.error ya contiene el mensaje de error
+  }
+}
+
+async function shareInstagram() {
+  if (!composed.value?.blob) return
+  const file = new File([composed.value.blob], 'foto-marcha.jpg', { type: 'image/jpeg' })
+  if (navigator.canShare && navigator.canShare({ files: [file] })) {
+    try {
+      await navigator.share({
+        files: [file],
+        title: 'Mi foto en la Marcha',
+        text: 'Yo tambiǸn me sumo!'
+      })
+    } catch (e) {
+      console.error(e)
+    }
+  } else {
+    // Fallback: download
+    const link = document.createElement('a')
+    link.href = composed.value.previewUrl
+    link.download = 'foto-marcha.jpg'
+    link.click()
   }
 }
 
@@ -220,6 +243,13 @@ async function handleSubmit(turnstileToken) {
             Quedó pendiente de moderación. Apenas se apruebe aparecerá publicada en el Mural.
           </p>
         </div>
+
+        <button
+          class="w-full bg-pink-600 hover:bg-pink-500 text-white font-bold py-3 px-4 rounded-xl transition-all shadow-lg"
+          @click="shareInstagram"
+        >
+          Compartir en Instagram (o descargar)
+        </button>
 
         <button
           class="w-full bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold py-3 px-4 rounded-xl transition-all shadow-lg shadow-cyan-950/50"
