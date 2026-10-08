@@ -3,11 +3,5 @@
   "submissionsCloseAt": "2026-10-15T23:59:59-03:00",
   "maxSubmissionsPerDevice": 6,
   "gridPageSize": 100,
-  "marcos": [
-    {
-      "id": "marco-1791497558876",
-      "label": "Nuevo Marco",
-      "url": "https://res.cloudinary.com/yl7b8vmh/image/upload/v1791497558/marcos/marcos/frame-pjpqz8yl.png"
-    }
-  ]
+  "marcos": []
 }
