@@ -3,6 +3,8 @@ import { ref, onMounted, onUnmounted } from 'vue'
 
 const props = defineProps({
   marco: { type: Object, required: true },
+  phraseLabel: { type: String, default: 'Con mis amigos/as' },
+  prefix: { type: String, default: 'Yo voy a la Marcha...' }
 })
 
 const emit = defineEmits(['save', 'cancel'])
@@ -171,12 +173,12 @@ function cancel() {
                    fontSize: config.phrase.fontSize + 'px' 
                  }">
               <template v-if="!config.phrase.curve || config.phrase.curve === 0">
-                Yo voy a la marcha...
+                {{ props.prefix }} {{ props.phraseLabel }}
               </template>
               <template v-else>
                 <div style="position: relative; width: 0; height: 0; display: flex; justify-content: center;">
-                  <span v-for="(char, i) in 'Yo voy a la marcha...'.split('')" :key="i"
-                        :style="getCharStyle(i, 21, config.phrase.curve, config.phrase.fontSize)">
+                  <span v-for="(char, i) in (props.prefix + ' ' + props.phraseLabel).trim().split('')" :key="i"
+                        :style="getCharStyle(i, (props.prefix + ' ' + props.phraseLabel).trim().length, config.phrase.curve, config.phrase.fontSize)">
                     {{ char === ' ' ? '\u00A0' : char }}
                   </span>
                 </div>
@@ -194,9 +196,7 @@ function cancel() {
                    backgroundColor: config.name.bgColor,
                    fontFamily: config.name.font,
                    fontSize: config.name.fontSize + 'px' 
-                 }">
-              Nombre del Participante
-            </div>
+                 }"> Tu Nombre o Agrupación </div>
           </div>
         </div>
       </div>

@@ -132,7 +132,8 @@ onMounted(load)
             <tr v-if="expandedPhraseId === option.id">
               <td colspan="5" style="padding: 0;">
                 <PhraseMarcosManager 
-                  :phrase="option" 
+                  :phrase="option"
+                  :prefix="prefix"
                   @add-marco="addMarco" 
                   @remove-marco="removeMarco" 
                   @update-label="updateMarcoLabel" 

@@ -5,6 +5,7 @@ import PhraseMarcoDesigner from './PhraseMarcoDesigner.vue'
 
 const props = defineProps({
   phrase: { type: Object, required: true },
+  prefix: { type: String, default: '' },
 })
 
 const emit = defineEmits(['add-marco', 'remove-marco', 'update-label', 'update-config'])
@@ -87,6 +88,8 @@ function handleSaveConfig(newConfig) {
     <PhraseMarcoDesigner 
       v-if="editingMarcoId" 
       :marco="phrase.marcos.find(m => m.id === editingMarcoId)" 
+      :phrase-label="phrase.label"
+      :prefix="prefix"
       @save="handleSaveConfig" 
       @cancel="closeDesigner" 
     />
