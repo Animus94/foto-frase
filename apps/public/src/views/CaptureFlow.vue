@@ -10,6 +10,7 @@ import { useCloudinaryUpload } from '@/composables/useCloudinaryUpload.js'
 import { useShare } from '@/composables/useShare.js'
 import ModeSelect from '@/components/ModeSelect.vue'
 import CameraCapture from '@/components/CameraCapture.vue'
+import PhotoAdjuster from '@/components/PhotoAdjuster.vue'
 import PhraseSelect from '@/components/PhraseSelect.vue'
 import ConsentStep from '@/components/ConsentStep.vue'
 
@@ -49,14 +50,34 @@ function resetToCamera() {
   step.value = 'camera'
 }
 
-function handleCaptured(frame) {
-  capturedFrame.value = frame
+function handleModeContinue() {
   step.value = 'phrase'
 }
 
-async function handlePhraseContinue() {
+function handlePhraseContinue() {
   const phraseLabel = phrases.resolvePhraseLabel(selectedPhraseId.value)
-  if (!phraseLabel || !capturedFrame.value) return
+  if (!phraseLabel) return
+  step.value = 'camera'
+}
+
+function handleCaptured(frame) {
+  // Convert source (image/video element) to ObjectURL for the adjuster
+  const canvas = document.createElement('canvas');
+  canvas.width = frame.width;
+  canvas.height = frame.height;
+  const ctx = canvas.getContext('2d');
+  ctx.drawImage(frame.source, 0, 0, frame.width, frame.height);
+  canvas.toBlob(blob => {
+    frame.srcUrl = URL.createObjectURL(blob);
+    capturedFrame.value = frame;
+    step.value = 'adjust';
+  });
+}
+
+async function handleAdjustConfirm(cropTransform) {
+  capturedFrame.value.cropTransform = cropTransform;
+  const phraseLabel = phrases.resolvePhraseLabel(selectedPhraseId.value)
+  if (!phraseLabel) return
   try {
     composed.value = await composition.composeSubmissionImage({
       source: capturedFrame.value.source,
@@ -68,6 +89,7 @@ async function handlePhraseContinue() {
       stickerName: stickerName.value,
       marco: capturedFrame.value.marco,
       mirror: capturedFrame.value.mirror,
+      cropTransform: capturedFrame.value.cropTransform,
     })
     step.value = 'consent'
   } catch {
@@ -140,16 +162,7 @@ async function handleSubmit(turnstileToken) {
         v-if="step === 'mode'"
         v-model="mode"
         v-model:sticker-name="stickerName"
-        @continue="step = 'camera'"
-      />
-
-      <CameraCapture
-        v-else-if="step === 'camera'"
-        facing-mode="user"
-        :mode="mode"
-        :mirror-preview="mode === 'camera'"
-        :marcos="campaign.marcos.value"
-        @captured="handleCaptured"
+        @continue="handleModeContinue"
       />
 
       <template v-else-if="step === 'phrase'">
@@ -166,6 +179,14 @@ async function handleSubmit(turnstileToken) {
         </p>
       </template>
 
+      <CameraCapture
+        v-else-if="step === 'camera'"
+        facing-mode="user"
+        :mode="mode"
+        :mirror-preview="mode === 'camera'"
+        :marcos="phrases.options.value.find(o => o.id === selectedPhraseId)?.marcos || []"
+        @captured="handleCaptured"
+      />
       <ConsentStep
         v-else-if="step === 'consent'"
         :preview-url="composed.previewUrl"

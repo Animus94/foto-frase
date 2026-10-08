@@ -326,3 +326,85 @@ function drawRoundedRect(ctx, x, y, w, h, radius, fillStyle) {
   ctx.fillStyle = fillStyle
   ctx.fill()
 }
+
+function drawMarcoConfiguredText(ctx, width, height, phraseText, nameText, config) {
+  // Config coords are in %, fontSizes are based on a 450x600 reference
+  const scale = height / 600;
+
+  // Draw Phrase
+  if (config.phrase) {
+    ctx.save();
+    const x = (config.phrase.x / 100) * width;
+    const y = (config.phrase.y / 100) * height;
+    const fontSize = (config.phrase.fontSize || 24) * scale;
+    const curve = config.phrase.curve || 0;
+    
+    ctx.font = `${fontSize}px "${config.phrase.font || 'Montserrat'}"`;
+    ctx.fillStyle = config.phrase.color || '#000000';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+
+    if (curve === 0) {
+      ctx.fillText(phraseText, x, y);
+    } else {
+      drawCurvedText(ctx, phraseText, x, y, fontSize, curve);
+    }
+    ctx.restore();
+  }
+
+  // Draw Name
+  if (config.name && nameText) {
+    ctx.save();
+    const x = (config.name.x / 100) * width;
+    const y = (config.name.y / 100) * height;
+    const fontSize = (config.name.fontSize || 16) * scale;
+    
+    ctx.font = `${fontSize}px "${config.name.font || 'Montserrat'}"`;
+    const textWidth = ctx.measureText(nameText).width;
+    const paddingX = fontSize * 0.5;
+    const paddingY = fontSize * 0.3;
+    const w = textWidth + paddingX * 2;
+    const h = fontSize + paddingY * 2;
+    
+    // Background
+    if (config.name.bgColor && config.name.bgColor !== 'transparent') {
+      ctx.fillStyle = config.name.bgColor;
+      drawRoundedRect(ctx, x - w/2, y - h/2, w, h, 8);
+    }
+    
+    ctx.fillStyle = config.name.textColor || '#ffffff';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(nameText, x, y);
+    ctx.restore();
+  }
+}
+
+function drawCurvedText(ctx, text, x, y, fontSize, curve) {
+  const len = text.length;
+  // match the designer logic
+  const L = len * fontSize * 0.45;
+  const angleRad = (Math.abs(curve) * Math.PI) / 180;
+  const R = angleRad > 0.01 ? L / angleRad : 10000;
+  const isRainbow = curve > 0;
+  
+  ctx.save();
+  ctx.translate(x, y);
+  
+  // if rainbow, origin is R below. So we move down by R, then rotate around it.
+  const originY = isRainbow ? R : -R;
+  ctx.translate(0, originY);
+  
+  for (let i = 0; i < len; i++) {
+    ctx.save();
+    const anglePerChar = curve / (len - 1 || 1);
+    const startAngle = -curve / 2;
+    const angle = startAngle + i * anglePerChar;
+    
+    ctx.rotate((angle * Math.PI) / 180);
+    ctx.translate(0, -originY);
+    ctx.fillText(text[i], 0, 0);
+    ctx.restore();
+  }
+  ctx.restore();
+}
