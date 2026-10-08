@@ -9,11 +9,17 @@ const {
   saving,
   error,
   load,
+  
   addOption,
   setActive,
   updateLabel,
   updatePrefix,
   save,
+  addMarco,
+  removeMarco,
+  updateMarcoConfig,
+  updateMarcoLabel
+
 } = usePhrasesEditor({ allowMock: true })
 
 const newLabel = ref('')
@@ -21,7 +27,14 @@ const newId = ref('')
 const newIdTouchedByHand = ref(false)
 const addError = ref(null)
 const saveMessage = ref(null)
+
 const savedOk = ref(false)
+const expandedPhraseId = ref(null)
+
+function toggleMarcos(id) {
+  expandedPhraseId.value = expandedPhraseId.value === id ? null : id
+}
+
 
 watch(newLabel, (label) => {
   if (newIdTouchedByHand.value) return
@@ -86,28 +99,49 @@ onMounted(load)
             <th>id</th>
             <th>Texto</th>
             <th>Vista previa</th>
+            <th>Marcos</th>
           </tr>
         </thead>
+        
         <tbody>
-          <tr v-for="option in options" :key="option.id">
-            <td>
-              <input
-                type="checkbox"
-                :checked="option.active"
-                @change="setActive(option.id, $event.target.checked)"
-              />
-            </td>
-            <td><code>{{ option.id }}</code></td>
-            <td>
-              <input
-                type="text"
-                :value="option.label"
-                @input="updateLabel(option.id, $event.target.value)"
-              />
-            </td>
-            <td class="ff-muted">{{ prefix }} {{ option.label }}</td>
-          </tr>
+          <template v-for="option in options" :key="option.id">
+            <tr>
+              <td>
+                <input
+                  type="checkbox"
+                  :checked="option.active"
+                  @change="setActive(option.id, $event.target.checked)"
+                />
+              </td>
+              <td><code>{{ option.id }}</code></td>
+              <td>
+                <input
+                  type="text"
+                  :value="option.label"
+                  @input="updateLabel(option.id, $event.target.value)"
+                />
+              </td>
+              <td class="ff-muted">{{ prefix }} {{ option.label }}</td>
+              <td>
+                <button type="button" class="ff-button ff-button--secondary" style="padding: 4px 8px; font-size: 0.8rem;" @click="toggleMarcos(option.id)">
+                  {{ expandedPhraseId === option.id ? 'Cerrar Marcos' : 'Marcos (' + (option.marcos ? option.marcos.length : 0) + ')' }}
+                </button>
+              </td>
+            </tr>
+            <tr v-if="expandedPhraseId === option.id">
+              <td colspan="5" style="padding: 0;">
+                <PhraseMarcosManager 
+                  :phrase="option" 
+                  @add-marco="addMarco" 
+                  @remove-marco="removeMarco" 
+                  @update-label="updateMarcoLabel" 
+                  @update-config="updateMarcoConfig" 
+                />
+              </td>
+            </tr>
+          </template>
         </tbody>
+
       </table>
       </div>
 
