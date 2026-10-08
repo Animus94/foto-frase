@@ -61,17 +61,22 @@ function handlePhraseContinue() {
 }
 
 function handleCaptured(frame) {
-  // Convert source (image/video element) to ObjectURL for the adjuster
-  const canvas = document.createElement('canvas');
-  canvas.width = frame.width;
-  canvas.height = frame.height;
-  const ctx = canvas.getContext('2d');
-  ctx.drawImage(frame.source, 0, 0, frame.width, frame.height);
-  canvas.toBlob(blob => {
-    frame.srcUrl = URL.createObjectURL(blob);
+  if (frame.source instanceof HTMLImageElement) {
+    frame.srcUrl = frame.source.src;
     capturedFrame.value = frame;
     step.value = 'adjust';
-  });
+  } else {
+    const canvas = document.createElement('canvas');
+    canvas.width = frame.width;
+    canvas.height = frame.height;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(frame.source, 0, 0, frame.width, frame.height);
+    canvas.toBlob(blob => {
+      if (blob) frame.srcUrl = URL.createObjectURL(blob);
+      capturedFrame.value = frame;
+      step.value = 'adjust';
+    }, 'image/jpeg', 0.9);
+  }
 }
 
 async function handleAdjustConfirm(cropTransform) {
@@ -187,6 +192,16 @@ async function handleSubmit(turnstileToken) {
         :marcos="phrases.options.value.find(o => o.id === selectedPhraseId)?.marcos || []"
         @captured="handleCaptured"
       />
+
+      <PhotoAdjuster
+        v-else-if="step === 'adjust'"
+        :src="capturedFrame.srcUrl"
+        :marco-url="capturedFrame.marco?.url"
+        :mirror="capturedFrame.mirror"
+        @confirm="handleAdjustConfirm"
+        @cancel="step = 'camera'"
+      />
+
       <ConsentStep
         v-else-if="step === 'consent'"
         :preview-url="composed.previewUrl"
