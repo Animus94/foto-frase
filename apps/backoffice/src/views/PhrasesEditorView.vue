@@ -1,6 +1,7 @@
 <script setup>
 import { onMounted, ref, watch } from 'vue'
 import { usePhrasesEditor, slugify } from '../composables/usePhrasesEditor.js'
+import PhraseMarcosManager from './PhraseMarcosManager.vue'
 
 const {
   prefix,
