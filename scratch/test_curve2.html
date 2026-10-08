@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<body>
+<div style='margin:300px; text-align:center;'>
+  <div style='position:relative;width:10px;height:10px;background:red;margin:0 auto;' id='c'></div>
+  <div style='position:relative;width:10px;height:10px;background:blue;margin:0 auto; margin-top:200px' id='c2'></div>
+</div>
+<script>
+const text = 'Yo voy a la marcha...';
+const len = text.length;
+const fontSize = 30;
+
+function drawCurve(container, curve) {
+  const L = len * fontSize * 0.45;
+  const angleRad = (Math.abs(curve) * Math.PI) / 180;
+  const R = angleRad > 0.01 ? L / angleRad : 10000;
+  const isRainbow = curve > 0;
+  const originY = isRainbow ? R : -R;
+
+  text.split('').forEach((char, i) => {
+    const anglePerChar = curve / (len - 1);
+    const angle = -curve/2 + i * anglePerChar;
+    const span = document.createElement('span');
+    span.innerHTML = char === ' ' ? '&nbsp;' : char;
+    span.style.position = 'absolute';
+    span.style.fontSize = fontSize + 'px';
+    span.style.fontFamily = 'sans-serif';
+    span.style.transformOrigin = `50% ${originY}px`;
+    span.style.transform = `translate(-50%, 0) rotate(${angle}deg)`;
+    container.appendChild(span);
+  });
+}
+
+drawCurve(document.getElementById('c'), 180); // Rainbow
+drawCurve(document.getElementById('c2'), -180); // Smile
+</script>
+</body>
+</html>
+

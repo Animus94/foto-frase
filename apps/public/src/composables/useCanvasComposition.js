@@ -91,6 +91,7 @@ export function useCanvasComposition() {
     stickerName,
     mirror = false,
     marco,
+    cropTransform,
   }) {
     isComposing.value = true
     error.value = null
@@ -103,13 +104,21 @@ export function useCanvasComposition() {
           marco?.url ? loadMarcoImage(marco.url) : Promise.resolve(null)
         ])
 
-      const { width, height } = computeScaledDimensions(sourceWidth, sourceHeight, MAX_SIDE)
+      let width, height;
+      if (cropTransform || marco) {
+        height = Math.min(MAX_SIDE, Math.max(sourceWidth, sourceHeight));
+        width = Math.round(height * 0.75);
+      } else {
+        const dims = computeScaledDimensions(sourceWidth, sourceHeight, MAX_SIDE);
+        width = dims.width;
+        height = dims.height;
+      }
       const canvas = document.createElement('canvas')
       canvas.width = width
       canvas.height = height
       const ctx = canvas.getContext('2d')
 
-      drawBasePhoto(ctx, source, width, height, mirror)
+      drawBasePhoto(ctx, source, sourceWidth, sourceHeight, width, height, mirror, cropTransform)
       if (marcoImg) {
         ctx.drawImage(marcoImg, 0, 0, width, height)
       }
@@ -141,13 +150,37 @@ export function useCanvasComposition() {
   return { composeSubmissionImage, isComposing, error }
 }
 
-function drawBasePhoto(ctx, source, width, height, mirror) {
+function drawBasePhoto(ctx, source, sourceWidth, sourceHeight, width, height, mirror, cropTransform) {
   ctx.save()
-  if (mirror) {
-    ctx.translate(width, 0)
-    ctx.scale(-1, 1)
+  if (cropTransform) {
+    const { panX, panY, scale, containerWidth, containerHeight } = cropTransform
+    const canvasScale = width / containerWidth
+    
+    // Simulate object-fit: cover sizing
+    const coverScale = Math.max(containerWidth / sourceWidth, containerHeight / sourceHeight)
+    const drawW = sourceWidth * coverScale
+    const drawH = sourceHeight * coverScale
+    
+    // DOM centers the element then applies pan/scale.
+    ctx.translate(width / 2, height / 2)
+    ctx.translate(panX * canvasScale, panY * canvasScale)
+    ctx.scale(scale, scale)
+    
+    if (mirror) {
+      ctx.scale(-1, 1)
+    }
+    
+    const finalW = drawW * canvasScale
+    const finalH = drawH * canvasScale
+    
+    ctx.drawImage(source, -finalW / 2, -finalH / 2, finalW, finalH)
+  } else {
+    if (mirror) {
+      ctx.translate(width, 0)
+      ctx.scale(-1, 1)
+    }
+    ctx.drawImage(source, 0, 0, width, height)
   }
-  ctx.drawImage(source, 0, 0, width, height)
   ctx.restore()
 }
 

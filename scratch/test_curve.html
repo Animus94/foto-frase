@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<body>
+<div style='margin:200px; text-align:center;'>
+  <div style='position:relative;width:0;height:0;margin:0 auto;' id='c'></div>
+</div>
+<script>
+const text = 'Yo voy a la marcha...';
+const len = text.length;
+const curve = 180; // degrees
+const fontSize = 30;
+const L = len * fontSize * 0.5;
+const angleRad = (Math.abs(curve) * Math.PI) / 180;
+const R = L / angleRad;
+const c = document.getElementById('c');
+text.split('').forEach((char, i) => {
+  const angle = -curve/2 + i * (curve/(len-1));
+  const span = document.createElement('span');
+  span.innerHTML = char === ' ' ? '&nbsp;' : char;
+  span.style.position = 'absolute';
+  span.style.fontSize = fontSize + 'px';
+  // To curve 'up' like a rainbow, origin is below the text
+  span.style.transformOrigin = '50% ' + R + 'px';
+  span.style.transform = 'translate(-50%, 0) rotate(' + angle + 'deg)';
+  c.appendChild(span);
+});
+</script>
+</body>
+</html>
+
