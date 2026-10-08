@@ -25,7 +25,33 @@
     {
       "id": "hijos",
       "label": "con la UNAHUR",
-      "active": true
+      "active": true,
+      "marcos": [
+        {
+          "id": "marco-1791502200096",
+          "url": "https://res.cloudinary.com/yl7b8vmh/image/upload/v1791502199/marcos/marcos/frame-eqtc1hvy.png",
+          "label": "Nuevo Marco",
+          "config": {
+            "phrase": {
+              "x": 90,
+              "y": 62,
+              "color": "#ffffff",
+              "font": "Playfair Display",
+              "fontSize": 24,
+              "width": 300,
+              "curve": -100
+            },
+            "name": {
+              "x": 49,
+              "y": 96,
+              "textColor": "#ffffff",
+              "bgColor": "#2a385f",
+              "font": "Montserrat",
+              "fontSize": 22
+            }
+          }
+        }
+      ]
     }
   ]
 }
