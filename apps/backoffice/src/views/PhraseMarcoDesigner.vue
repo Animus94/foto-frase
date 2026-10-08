@@ -1,5 +1,5 @@
 <script setup>
-import { ref, watch, onMounted } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 
 const props = defineProps({
   marco: { type: Object, required: true },
@@ -8,6 +8,55 @@ const props = defineProps({
 const emit = defineEmits(['save', 'cancel'])
 
 const config = ref(JSON.parse(JSON.stringify(props.marco.config)))
+
+// Asegurar valores por defecto para fuentes
+if (!config.value.phrase.font) config.value.phrase.font = 'Montserrat'
+if (!config.value.name.font) config.value.name.font = 'Montserrat'
+
+const availableFonts = [
+  'Montserrat', 'Roboto', 'Oswald', 'Playfair Display', 'Pacifico', 'Bebas Neue'
+]
+
+const containerRef = ref(null)
+const draggingElement = ref(null)
+
+function startDrag(e, element) {
+  if (e.type !== 'touchstart') {
+    e.preventDefault()
+  }
+  draggingElement.value = element
+  
+  const moveHandler = (moveEvent) => {
+    if (!draggingElement.value || !containerRef.value) return
+    const rect = containerRef.value.getBoundingClientRect()
+    let xPx = moveEvent.clientX - rect.left
+    let yPx = moveEvent.clientY - rect.top
+    let xPct = (xPx / rect.width) * 100
+    let yPct = (yPx / rect.height) * 100
+    config.value[draggingElement.value].x = Math.round(Math.max(0, Math.min(100, xPct)))
+    config.value[draggingElement.value].y = Math.round(Math.max(0, Math.min(100, yPct)))
+  }
+  
+  const touchMoveHandler = (touchEvent) => {
+    if (touchEvent.touches.length > 0) {
+      touchEvent.preventDefault()
+      moveHandler(touchEvent.touches[0])
+    }
+  }
+  
+  const upHandler = () => {
+    draggingElement.value = null
+    window.removeEventListener('mousemove', moveHandler)
+    window.removeEventListener('mouseup', upHandler)
+    window.removeEventListener('touchmove', touchMoveHandler)
+    window.removeEventListener('touchend', upHandler)
+  }
+
+  window.addEventListener('mousemove', moveHandler)
+  window.addEventListener('mouseup', upHandler)
+  window.addEventListener('touchmove', touchMoveHandler, { passive: false })
+  window.addEventListener('touchend', upHandler)
+}
 
 function save() {
   emit('save', config.value)
@@ -24,9 +73,14 @@ function cancel() {
       <h2 style="margin-top:0">Diseñador del Marco: {{ marco.label }}</h2>
       
       <div class="designer-layout">
-        <!-- Controles -->
         <div class="designer-controls">
           <h3>Texto de Consigna</h3>
+          <div class="ff-field">
+            <label>Tipografía</label>
+            <select v-model="config.phrase.font">
+              <option v-for="font in availableFonts" :key="font" :value="font">{{ font }}</option>
+            </select>
+          </div>
           <div class="ff-field">
             <label>Color (Hex)</label>
             <input type="color" v-model="config.phrase.color" />
@@ -34,12 +88,10 @@ function cancel() {
           <div class="ff-field">
             <label>Posición X (%)</label>
             <input type="range" min="0" max="100" v-model.number="config.phrase.x" />
-            <span>{{ config.phrase.x }}%</span>
           </div>
           <div class="ff-field">
             <label>Posición Y (%)</label>
             <input type="range" min="0" max="100" v-model.number="config.phrase.y" />
-            <span>{{ config.phrase.y }}%</span>
           </div>
           <div class="ff-field">
             <label>Tamaño Fuente</label>
@@ -49,6 +101,12 @@ function cancel() {
           <hr style="margin: 1rem 0; border: none; border-top: 1px solid #ccc;" />
 
           <h3>Nombre del Participante</h3>
+          <div class="ff-field">
+            <label>Tipografía</label>
+            <select v-model="config.name.font">
+              <option v-for="font in availableFonts" :key="font" :value="font">{{ font }}</option>
+            </select>
+          </div>
           <div class="ff-field">
             <label>Color de Letra</label>
             <input type="color" v-model="config.name.textColor" />
@@ -60,12 +118,10 @@ function cancel() {
           <div class="ff-field">
             <label>Posición X (%)</label>
             <input type="range" min="0" max="100" v-model.number="config.name.x" />
-            <span>{{ config.name.x }}%</span>
           </div>
           <div class="ff-field">
             <label>Posición Y (%)</label>
             <input type="range" min="0" max="100" v-model.number="config.name.y" />
-            <span>{{ config.name.y }}%</span>
           </div>
           <div class="ff-field">
             <label>Tamaño Fuente</label>
@@ -73,24 +129,33 @@ function cancel() {
           </div>
         </div>
 
-        <!-- Previsualización Visual -->
         <div class="designer-preview">
-          <div class="canvas-container" :style="{ backgroundImage: 'url(' + marco.url + ')' }">
-            <div class="preview-phrase" 
+          <div class="canvas-container" ref="containerRef" :style="{ backgroundImage: 'url(' + marco.url + ')' }">
+            
+            <!-- Consigna -->
+            <div class="preview-phrase draggable"
+                 @mousedown="startDrag($event, 'phrase')"
+                 @touchstart="startDrag($event, 'phrase')"
                  :style="{ 
                    left: config.phrase.x + '%', 
                    top: config.phrase.y + '%', 
                    color: config.phrase.color, 
+                   fontFamily: config.phrase.font,
                    fontSize: config.phrase.fontSize + 'px' 
                  }">
               Yo voy a la marcha...
             </div>
-            <div class="preview-name" 
+            
+            <!-- Nombre -->
+            <div class="preview-name draggable"
+                 @mousedown="startDrag($event, 'name')"
+                 @touchstart="startDrag($event, 'name')"
                  :style="{ 
                    left: config.name.x + '%', 
                    top: config.name.y + '%', 
                    color: config.name.textColor, 
                    backgroundColor: config.name.bgColor,
+                   fontFamily: config.name.font,
                    fontSize: config.name.fontSize + 'px' 
                  }">
               Nombre del Participante
@@ -100,6 +165,7 @@ function cancel() {
       </div>
 
       <div class="designer-actions">
+        <span class="ff-muted" style="margin-right:auto; padding-top:0.5rem">💡 Podés arrastrar los textos directamente en la imagen</span>
         <button type="button" class="ff-button ff-button--secondary" @click="cancel">Cancelar</button>
         <button type="button" class="ff-button" @click="save">Guardar Diseño</button>
       </div>
@@ -108,6 +174,8 @@ function cancel() {
 </template>
 
 <style scoped>
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Oswald:wght@200..700&family=Pacifico&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+
 .designer-modal {
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;
@@ -171,24 +239,42 @@ function cancel() {
   box-shadow: 0 10px 25px rgba(0,0,0,0.2);
 }
 
+.draggable {
+  cursor: grab;
+  user-select: none;
+}
+.draggable:active {
+  cursor: grabbing;
+}
+
 .preview-phrase {
   position: absolute;
-  font-family: 'Montserrat', sans-serif;
   font-weight: bold;
   transform: translate(-50%, -50%);
   text-align: center;
   width: 80%;
   text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+  padding: 10px;
+  border: 2px dashed transparent;
+  transition: border 0.2s;
+}
+.preview-phrase:hover {
+  border-color: rgba(255,255,255,0.5);
+  background: rgba(0,0,0,0.1);
 }
 
 .preview-name {
   position: absolute;
-  font-family: 'Montserrat', sans-serif;
   font-weight: bold;
   transform: translate(-50%, -50%);
   padding: 0.2em 0.5em;
   border-radius: 4px;
   white-space: nowrap;
+  border: 2px dashed transparent;
+  transition: border 0.2s;
+}
+.preview-name:hover {
+  border-color: rgba(255,255,255,0.5);
 }
 
 .designer-actions {
