@@ -56,6 +56,23 @@ function loadLogoImage() {
   return logoLoadPromise
 }
 
+async function loadGoogleFont(fontFamily) {
+  if (!fontFamily || fontFamily === FONT_FAMILY) return;
+  const linkId = `gfont-${fontFamily.replace(/\s+/g, '-')}`;
+  if (!document.getElementById(linkId)) {
+    const link = document.createElement('link');
+    link.id = linkId;
+    link.rel = 'stylesheet';
+    link.href = `https://fonts.googleapis.com/css2?family=${fontFamily.replace(/\s+/g, '+')}:wght@400;700&display=swap`;
+    document.head.appendChild(link);
+  }
+  try {
+    await document.fonts.load(`12px "${fontFamily}"`);
+  } catch(e) {
+    console.warn('Could not load font', fontFamily, e);
+  }
+}
+
 /**
  * Client-side image composition pipeline (ADR-002 §4): base photo → bottom
  * caption stripe with the chosen phrase → logo + "#Yo voy" watermark in a
@@ -105,6 +122,15 @@ export function useCanvasComposition() {
           marco?.url ? loadMarcoImage(marco.url) : Promise.resolve(null)
         ])
 
+      if (marco?.config) {
+        if (marco.config.phrase?.font) {
+          await loadGoogleFont(marco.config.phrase.font);
+        }
+        if (marco.config.name?.font) {
+          await loadGoogleFont(marco.config.name.font);
+        }
+      }
+
       let width, height;
       if (cropTransform || marco) {
         height = Math.min(MAX_SIDE, Math.max(sourceWidth, sourceHeight));
@@ -126,7 +152,7 @@ export function useCanvasComposition() {
           drawMarcoConfiguredText(ctx, width, height, phrasePrefix + ' ' + phraseLabel, sanitizedStickerName, marco.config)
         }
       }
-      if (!marcoImg && phraseId === 'amigos') {
+      if (!marcoImg && phraseId === 'docente') {
         drawCaptionStripe(ctx, width, height, phrasePrefix, phraseLabel)
         const { pillWidth: watermarkPillWidth } = drawWatermark(ctx, width, height, logo)
         if (sanitizedStickerName) {
@@ -426,6 +452,7 @@ function drawCurvedText(ctx, text, x, y, fontSize, curve) {
   const isRainbow = curve > 0;
   
   ctx.save();
+  ctx.textBaseline = 'top';
   ctx.translate(x, y);
   
   // if rainbow, origin is R below. So we move down by R, then rotate around it.

@@ -26,6 +26,19 @@ const startPanY = ref(0)
 const startDist = ref(0)
 const startScale = ref(1)
 
+const sourceWidth = ref(0)
+const sourceHeight = ref(0)
+const drawW = ref(0)
+const drawH = ref(0)
+
+function updateDrawDims() {
+  if (!containerRef.value || !sourceWidth.value || !sourceHeight.value) return
+  const rect = containerRef.value.getBoundingClientRect()
+  const coverScale = Math.max(rect.width / sourceWidth.value, rect.height / sourceHeight.value)
+  drawW.value = sourceWidth.value * coverScale
+  drawH.value = sourceHeight.value * coverScale
+}
+
 function handleStart(e) {
   if (e.touches && e.touches.length === 2) {
     // Pinch start
@@ -98,6 +111,15 @@ onMounted(() => {
   window.addEventListener('mouseup', handleEnd)
   window.addEventListener('touchmove', handleMove, { passive: false })
   window.addEventListener('touchend', handleEnd)
+  window.addEventListener('resize', updateDrawDims)
+  
+  const img = new Image()
+  img.onload = () => {
+    sourceWidth.value = img.naturalWidth
+    sourceHeight.value = img.naturalHeight
+    updateDrawDims()
+  }
+  img.src = props.src
 })
 
 onUnmounted(() => {
@@ -105,6 +127,7 @@ onUnmounted(() => {
   window.removeEventListener('mouseup', handleEnd)
   window.removeEventListener('touchmove', handleMove)
   window.removeEventListener('touchend', handleEnd)
+  window.removeEventListener('resize', updateDrawDims)
 })
 </script>
 
@@ -120,8 +143,10 @@ onUnmounted(() => {
       <img 
         ref="imageRef"
         :src="src" 
-        class="absolute top-1/2 left-1/2 min-w-full min-h-full object-cover pointer-events-none"
+        class="absolute top-1/2 left-1/2 pointer-events-none max-w-none"
         :style="{
+          width: drawW + 'px',
+          height: drawH + 'px',
           transform: `translate(calc(-50% + ${panX}px), calc(-50% + ${panY}px)) scale(${scale}) ${mirror ? 'scaleX(-1)' : ''}`
         }"
       />

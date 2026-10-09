@@ -16,6 +16,5 @@ export const router = createRouter({
   routes: [
     { path: '/', name: 'capture', component: CaptureFlow },
     { path: '/mural', name: 'mural', component: Mural },
-    { path: '/carrusel', name: 'carrusel', component: Carrusel },
   ],
 })

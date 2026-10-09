@@ -16,9 +16,9 @@ const { needRefresh, reloadForUpdate } = usePwaUpdate()
         <RouterLink to="/mural" class="text-slate-300 hover:text-emerald-400 font-medium text-sm transition-colors">
           Ver Mural
         </RouterLink>
-        <RouterLink to="/carrusel" class="text-slate-300 hover:text-emerald-400 font-medium text-sm transition-colors">
-          Carrusel
-        </RouterLink>
+        <a href="https://animus94.github.io/foto-frase/" class="text-slate-300 hover:text-emerald-400 font-medium text-sm transition-colors">
+          Volver
+        </a>
       </nav>
     </header>
 
