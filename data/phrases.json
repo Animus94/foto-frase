@@ -33,7 +33,7 @@
           "label": "Universidad Publica",
           "config": {
             "phrase": {
-              "x": 45,
+              "x": 49,
               "y": 62,
               "color": "#ffffff",
               "font": "Playfair Display",
@@ -42,7 +42,7 @@
               "curve": -100
             },
             "name": {
-              "x": 49,
+              "x": 51,
               "y": 96,
               "textColor": "#ffffff",
               "bgColor": "#2a385f",
