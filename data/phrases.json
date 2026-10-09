@@ -42,7 +42,34 @@
     {
       "id": "companeros",
       "label": "como no docente",
-      "active": true
+      "active": true,
+      "marcos": [
+        {
+          "id": "marco-1791508766346",
+          "url": "https://res.cloudinary.com/yl7b8vmh/image/upload/v1791508765/marcos/marcos/frame-svfhjjwu.png",
+          "label": "Universidad Publica",
+          "config": {
+            "phrase": {
+              "x": 51,
+              "y": 62,
+              "color": "#ffffff",
+              "font": "Bebas Neue",
+              "fontSize": 24,
+              "width": 300,
+              "bgColor": "#480a0a",
+              "curve": -114
+            },
+            "name": {
+              "x": 50,
+              "y": 96,
+              "textColor": "#667e63",
+              "bgColor": "#2a385f",
+              "font": "Bebas Neue",
+              "fontSize": 28
+            }
+          }
+        }
+      ]
     },
     {
       "id": "comision",
