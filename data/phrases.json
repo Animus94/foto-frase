@@ -74,7 +74,33 @@
     {
       "id": "comision",
       "label": "como graduado",
-      "active": true
+      "active": true,
+      "marcos": [
+        {
+          "id": "marco-1791509155255",
+          "url": "https://res.cloudinary.com/yl7b8vmh/image/upload/v1791509154/marcos/marcos/frame-ucqvt1zs.png",
+          "label": "UNAHUR",
+          "config": {
+            "phrase": {
+              "x": 52,
+              "y": 55,
+              "color": "#eadab8",
+              "font": "Pacifico",
+              "fontSize": 24,
+              "width": 300,
+              "curve": 21
+            },
+            "name": {
+              "x": 51,
+              "y": 93,
+              "textColor": "#ffffff",
+              "bgColor": "#e9dab5",
+              "font": "Playfair Display",
+              "fontSize": 22
+            }
+          }
+        }
+      ]
     },
     {
       "id": "hijos",
