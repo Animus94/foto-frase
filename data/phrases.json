@@ -33,13 +33,14 @@
           "label": "Universidad Publica",
           "config": {
             "phrase": {
-              "x": 49,
+              "x": 51,
               "y": 62,
               "color": "#ffffff",
               "font": "Playfair Display",
               "fontSize": 24,
               "width": 300,
-              "curve": -100
+              "curve": -100,
+              "bgColor": "#293660"
             },
             "name": {
               "x": 51,
@@ -57,13 +58,14 @@
           "label": "Marco Unahur",
           "config": {
             "phrase": {
-              "x": 48,
-              "y": 13,
+              "x": 52,
+              "y": 12,
               "color": "#32502b",
               "font": "Bebas Neue",
               "fontSize": 24,
               "width": 300,
-              "curve": 110
+              "curve": 110,
+              "bgColor": "#ffffff"
             },
             "name": {
               "x": 50,
