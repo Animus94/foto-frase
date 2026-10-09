@@ -5,7 +5,34 @@
     {
       "id": "familia",
       "label": "como estudiante",
-      "active": true
+      "active": true,
+      "marcos": [
+        {
+          "id": "marco-1791507630809",
+          "url": "https://res.cloudinary.com/yl7b8vmh/image/upload/v1791507629/marcos/marcos/frame-xziaeg0c.png",
+          "label": "Nuevo Marco",
+          "config": {
+            "phrase": {
+              "x": 49,
+              "y": 3,
+              "color": "#ffffff",
+              "font": "Montserrat",
+              "fontSize": 21,
+              "width": 300,
+              "bgColor": "#235635",
+              "curve": 0
+            },
+            "name": {
+              "x": 64,
+              "y": 70,
+              "textColor": "#ffffff",
+              "bgColor": "#235635",
+              "font": "Montserrat",
+              "fontSize": 16
+            }
+          }
+        }
+      ]
     },
     {
       "id": "docente",
