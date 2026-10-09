@@ -33,7 +33,7 @@
           "label": "Universidad Publica",
           "config": {
             "phrase": {
-              "x": 90,
+              "x": 45,
               "y": 62,
               "color": "#ffffff",
               "font": "Playfair Display",
@@ -57,7 +57,7 @@
           "label": "Marco Unahur",
           "config": {
             "phrase": {
-              "x": 88,
+              "x": 48,
               "y": 13,
               "color": "#32502b",
               "font": "Bebas Neue",
@@ -67,7 +67,7 @@
             },
             "name": {
               "x": 50,
-              "y": 99,
+              "y": 100,
               "textColor": "#000000",
               "bgColor": "#f2e9c2",
               "font": "Montserrat",
