@@ -8,24 +8,25 @@
       "active": true,
       "marcos": [
         {
-          "id": "marco-1791508347132",
-          "url": "https://res.cloudinary.com/yl7b8vmh/image/upload/v1791508346/marcos/marcos/frame-uvtkef6r.png",
+          "id": "marco-1791508515398",
+          "url": "https://res.cloudinary.com/yl7b8vmh/image/upload/v1791508514/marcos/marcos/frame-2y1ohgt4.png",
           "label": "Nuevo Marco",
           "config": {
             "phrase": {
-              "x": 49,
+              "x": 50,
               "y": 3,
               "color": "#ffffff",
               "font": "Montserrat",
-              "fontSize": 22,
+              "fontSize": 24,
               "width": 300,
-              "bgColor": "#265332"
+              "bgColor": "#255432",
+              "curve": 0
             },
             "name": {
-              "x": 62,
+              "x": 63,
               "y": 72,
               "textColor": "#ffffff",
-              "bgColor": "#255432",
+              "bgColor": "#265332",
               "font": "Montserrat",
               "fontSize": 16
             }
