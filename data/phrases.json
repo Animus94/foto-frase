@@ -99,6 +99,31 @@
               "fontSize": 22
             }
           }
+        },
+        {
+          "id": "marco-1791569297970",
+          "url": "https://res.cloudinary.com/yl7b8vmh/image/upload/v1791569297/marcos/marcos/frame-jsbrulyc.png",
+          "label": "Nuevo Marco",
+          "config": {
+            "phrase": {
+              "x": 49,
+              "y": 62,
+              "color": "#2c3963",
+              "font": "Bebas Neue",
+              "fontSize": 24,
+              "width": 300,
+              "bgColor": "#ffffff",
+              "curve": -73
+            },
+            "name": {
+              "x": 52,
+              "y": 96,
+              "textColor": "#ffffff",
+              "bgColor": "#2d3865",
+              "font": "Montserrat",
+              "fontSize": 26
+            }
+          }
         }
       ]
     },
