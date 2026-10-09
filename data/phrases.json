@@ -60,12 +60,12 @@
               "curve": -114
             },
             "name": {
-              "x": 50,
-              "y": 96,
-              "textColor": "#667e63",
+              "x": 52,
+              "y": 97,
+              "textColor": "#f8fdf7",
               "bgColor": "#2a385f",
               "font": "Bebas Neue",
-              "fontSize": 28
+              "fontSize": 33
             }
           }
         }
