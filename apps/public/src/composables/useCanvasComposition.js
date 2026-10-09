@@ -59,13 +59,23 @@ function loadLogoImage() {
 async function loadGoogleFont(fontFamily) {
   if (!fontFamily || fontFamily === FONT_FAMILY) return;
   const linkId = `gfont-${fontFamily.replace(/\s+/g, '-')}`;
-  if (!document.getElementById(linkId)) {
-    const link = document.createElement('link');
+  let link = document.getElementById(linkId);
+  
+  if (!link) {
+    link = document.createElement('link');
     link.id = linkId;
     link.rel = 'stylesheet';
-    link.href = `https://fonts.googleapis.com/css2?family=${fontFamily.replace(/\s+/g, '+')}:wght@400;700&display=swap`;
+    link.href = `https://fonts.googleapis.com/css2?family=${fontFamily.replace(/\s+/g, '+')}&display=swap`;
+    
+    const loadPromise = new Promise((resolve) => {
+      link.onload = resolve;
+      link.onerror = resolve;
+    });
+    
     document.head.appendChild(link);
+    await loadPromise;
   }
+  
   try {
     await document.fonts.load(`12px "${fontFamily}"`);
   } catch(e) {
@@ -408,6 +418,17 @@ function drawMarcoConfiguredText(ctx, width, height, phraseText, nameText, confi
     ctx.textBaseline = 'middle';
 
     if (curve === 0) {
+      const textWidth = ctx.measureText(phraseText).width;
+      const paddingX = fontSize * 0.5;
+      const paddingY = fontSize * 0.3;
+      const w = textWidth + paddingX * 2;
+      const h = fontSize + paddingY * 2;
+      
+      if (config.phrase.bgColor && config.phrase.bgColor !== 'transparent') {
+        ctx.fillStyle = config.phrase.bgColor;
+        drawRoundedRect(ctx, x - w/2, y - h/2, w, h, 8);
+        ctx.fillStyle = config.phrase.color || '#000000';
+      }
       ctx.fillText(phraseText, x, y);
     } else {
       drawCurvedText(ctx, phraseText, x, y, fontSize, curve);

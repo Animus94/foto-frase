@@ -110,6 +110,10 @@ function cancel() {
             <input type="color" v-model="config.phrase.color" />
           </div>
           <div class="ff-field">
+            <label>Color de Fondo</label>
+            <input type="color" v-model="config.phrase.bgColor" />
+          </div>
+          <div class="ff-field">
             <label>Posición X (%)</label>
             <input type="range" min="0" max="100" v-model.number="config.phrase.x" />
           </div>
@@ -168,7 +172,8 @@ function cancel() {
                  :style="{ 
                    left: config.phrase.x + '%', 
                    top: config.phrase.y + '%', 
-                   color: config.phrase.color, 
+                   color: config.phrase.color,
+                   backgroundColor: (!config.phrase.curve || config.phrase.curve === 0) ? config.phrase.bgColor : 'transparent',
                    fontFamily: config.phrase.font,
                    fontSize: config.phrase.fontSize + 'px' 
                  }">
@@ -289,15 +294,15 @@ function cancel() {
   font-weight: bold;
   transform: translate(-50%, -50%);
   text-align: center;
-  width: 80%;
+  white-space: nowrap;
+  border-radius: 4px;
+  padding: 0.2em 0.5em;
   text-shadow: 0 2px 4px rgba(0,0,0,0.5);
-  padding: 10px;
   border: 2px dashed transparent;
   transition: border 0.2s;
 }
 .preview-phrase:hover {
   border-color: rgba(255,255,255,0.5);
-  background: rgba(0,0,0,0.1);
 }
 
 .preview-name {
