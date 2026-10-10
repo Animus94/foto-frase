@@ -15,20 +15,26 @@
             "phrase": {
               "x": 52,
               "y": 61,
-              "color": "#ffffff",
-              "font": "Bebas Neue",
+              "color": "#e9d7b3",
+              "font": "Playfair Display",
               "fontSize": 24,
               "width": 300,
               "bgColor": "#354f2d",
-              "curve": -114
+              "curve": -114,
+              "strokeWidth": 1,
+              "strokeColor": "#30492b",
+              "letterSpacing": 0
             },
             "name": {
               "x": 50,
               "y": 93,
-              "textColor": "#000000",
-              "bgColor": "#e0cb9c",
-              "font": "Montserrat",
-              "fontSize": 20
+              "textColor": "#344d2f",
+              "bgColor": "#e9d9af",
+              "font": "Pacifico",
+              "fontSize": 24,
+              "strokeWidth": 0,
+              "strokeColor": "#2e4076",
+              "letterSpacing": 0
             }
           }
         },
@@ -40,20 +46,26 @@
             "phrase": {
               "x": 50,
               "y": 61,
-              "color": "#c3a428",
-              "font": "Bebas Neue",
+              "color": "#fafaf8",
+              "font": "Roboto",
               "fontSize": 29,
               "width": 300,
               "bgColor": "#293565",
-              "curve": -119
+              "curve": -119,
+              "strokeWidth": 1,
+              "strokeColor": "#26335f",
+              "letterSpacing": 0
             },
             "name": {
-              "x": 52,
+              "x": 51,
               "y": 96,
               "textColor": "#ffffff",
               "bgColor": "#2a385f",
-              "font": "Montserrat",
-              "fontSize": 24
+              "font": "Roboto",
+              "fontSize": 28,
+              "strokeWidth": 0,
+              "strokeColor": "#000000",
+              "letterSpacing": 0
             }
           }
         }
