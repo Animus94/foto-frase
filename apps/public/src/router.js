@@ -16,5 +16,6 @@ export const router = createRouter({
   routes: [
     { path: '/', name: 'capture', component: CaptureFlow },
     { path: '/mural', name: 'mural', component: Mural },
+    { path: '/about-dev', name: 'about-dev', component: () => import('./views/AboutDev.vue') }
   ],
 })

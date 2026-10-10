@@ -1,5 +1,6 @@
 <script setup>
 import { computed } from 'vue'
+import { useRouter } from 'vue-router'
 
 const props = defineProps({
   items: {
@@ -7,6 +8,14 @@ const props = defineProps({
     default: () => []
   }
 })
+
+const router = useRouter()
+
+function handlePhotoClick(photo) {
+  if (photo.public_id === 'marcha-5ta/submissions/2ef15e4e-ff1b-4f33-bfd8-7ce254d5141f') {
+    router.push('/about-dev')
+  }
+}
 
 // Triplicamos la lista para garantizar el scroll infinito continuo
 const triplicatedItems = computed(() => {
@@ -34,7 +43,8 @@ const qrCodeUrl = computed(() =>
           <div 
             v-for="(photo, index) in triplicatedItems" 
             :key="'r1-' + index"
-            class="shrink-0 aspect-[3/4] h-48 md:h-64 bg-slate-900 rounded-2xl overflow-hidden border border-emerald-900/60 shadow-xl shadow-black/80 relative flex items-center justify-center"
+            class="shrink-0 aspect-[3/4] h-48 md:h-64 bg-slate-900 rounded-2xl overflow-hidden border border-emerald-900/60 shadow-xl shadow-black/80 relative flex items-center justify-center cursor-pointer hover:border-cyan-400 transition-colors"
+            @click="handlePhotoClick(photo)"
           >
             <img 
               :src="photo.secure_url || photo.url" 
@@ -54,7 +64,8 @@ const qrCodeUrl = computed(() =>
           <div 
             v-for="(photo, index) in triplicatedItems" 
             :key="'r2-' + index"
-            class="shrink-0 aspect-[3/4] h-48 md:h-64 bg-slate-900 rounded-2xl overflow-hidden border border-cyan-900/60 shadow-xl shadow-black/80 relative flex items-center justify-center"
+            class="shrink-0 aspect-[3/4] h-48 md:h-64 bg-slate-900 rounded-2xl overflow-hidden border border-cyan-900/60 shadow-xl shadow-black/80 relative flex items-center justify-center cursor-pointer hover:border-cyan-400 transition-colors"
+            @click="handlePhotoClick(photo)"
           >
             <img 
               :src="photo.secure_url || photo.url" 
@@ -74,7 +85,8 @@ const qrCodeUrl = computed(() =>
           <div 
             v-for="(photo, index) in triplicatedItems" 
             :key="'r3-' + index"
-            class="shrink-0 aspect-[3/4] h-48 md:h-64 bg-slate-900 rounded-2xl overflow-hidden border border-emerald-900/60 shadow-xl shadow-black/80 relative flex items-center justify-center"
+            class="shrink-0 aspect-[3/4] h-48 md:h-64 bg-slate-900 rounded-2xl overflow-hidden border border-emerald-900/60 shadow-xl shadow-black/80 relative flex items-center justify-center cursor-pointer hover:border-cyan-400 transition-colors"
+            @click="handlePhotoClick(photo)"
           >
             <img 
               :src="photo.secure_url || photo.url" 
