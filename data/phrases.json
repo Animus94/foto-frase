@@ -82,21 +82,28 @@
           "label": "UNAHUR",
           "config": {
             "phrase": {
-              "x": 50,
-              "y": 57,
-              "color": "#354e2e",
-              "font": "Bebas Neue",
-              "fontSize": 24,
+              "x": 53,
+              "y": 16,
+              "color": "#e8d5b4",
+              "font": "Pacifico",
+              "fontSize": 25,
               "width": 300,
-              "curve": 21
+              "curve": 145,
+              "bgColor": "transparent",
+              "strokeWidth": 1,
+              "strokeColor": "#354e2e",
+              "letterSpacing": 3.5
             },
             "name": {
-              "x": 51,
+              "x": 50,
               "y": 93,
-              "textColor": "#042f07",
-              "bgColor": "#e9dab5",
+              "textColor": "#287c04",
+              "bgColor": "transparent",
               "font": "Playfair Display",
-              "fontSize": 22
+              "fontSize": 24,
+              "strokeWidth": 1,
+              "strokeColor": "#3d4255",
+              "letterSpacing": 0
             }
           }
         },
