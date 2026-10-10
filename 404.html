@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>foto-frase</title>
+    <script>
+      // GitHub Pages serves ONLY this one root 404.html for the whole site —
+      // it does NOT look at a nested `/backoffice/404.html` (verified: GitHub
+      // Pages has no per-directory 404 support), even though this repo
+      // combines two separate Vue SPAs (apps/public at "/", apps/backoffice
+      // at "/backoffice/") under one Pages site (ADR-003). So this single
+      // script has to figure out, from the URL alone, which of the two apps a
+      // deep link (e.g. "/mural" or "/backoffice/moderacion") belongs to, and
+      // redirect to THAT app's own index.html — which each app's own
+      // index.html then restores via history.replaceState before its Vue
+      // Router boots (see the inline script in apps/*/index.html), so the
+      // visible URL ends up exactly where the user tried to go.
+      ;(function () {
+        var loc = window.location
+        // On a GitHub Pages *project* site, pathname is "/<repo>/...rest" —
+        // segments[1] is the repo name, whatever it's called (CLAUDE.md
+        // already flags the current "foto-frase" name as provisional; this
+        // never hardcodes it).
+        var segments = loc.pathname.split('/')
+        var repoBase = '/' + (segments[1] || '')
+        var isBackoffice = segments[2] === 'backoffice'
+        var spaBase = isBackoffice ? repoBase + '/backoffice/' : repoBase + '/'
+        var originalPath = loc.pathname + loc.search + loc.hash
+        loc.replace(spaBase + '?p=' + encodeURIComponent(originalPath))
+      })()
+    </script>
+  </head>
+  <body></body>
+</html>
