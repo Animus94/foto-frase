@@ -192,10 +192,13 @@
               "y": 62,
               "color": "#ffffff",
               "font": "Bebas Neue",
-              "fontSize": 24,
+              "fontSize": 30,
               "width": 300,
               "bgColor": "#480a0a",
-              "curve": -114
+              "curve": -114,
+              "strokeWidth": 1,
+              "strokeColor": "#275d2b",
+              "letterSpacing": 0
             },
             "name": {
               "x": 52,
@@ -203,7 +206,41 @@
               "textColor": "#f8fdf7",
               "bgColor": "#2a385f",
               "font": "Bebas Neue",
-              "fontSize": 33
+              "fontSize": 33,
+              "strokeWidth": 0,
+              "strokeColor": "#26f750",
+              "letterSpacing": 0
+            }
+          }
+        },
+        {
+          "id": "marco-1791648103011",
+          "url": "https://res.cloudinary.com/yl7b8vmh/image/upload/v1791648102/marcos/marcos/frame-m4fvx3ss.png",
+          "label": "Unahur",
+          "config": {
+            "phrase": {
+              "x": 52,
+              "y": 17,
+              "color": "#bff55c",
+              "font": "Bebas Neue",
+              "fontSize": 19,
+              "width": 300,
+              "bgColor": "transparent",
+              "strokeWidth": 0,
+              "strokeColor": "#ffffff",
+              "letterSpacing": 8,
+              "curve": 173
+            },
+            "name": {
+              "x": 50,
+              "y": 93,
+              "textColor": "#ffffff",
+              "bgColor": "transparent",
+              "font": "Montserrat",
+              "fontSize": 23,
+              "strokeWidth": 1,
+              "strokeColor": "#12de3b",
+              "letterSpacing": 0
             }
           }
         }
