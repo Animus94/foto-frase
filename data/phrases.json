@@ -158,25 +158,24 @@
           }
         },
         {
-          "id": "marco-1791502427968",
-          "url": "https://res.cloudinary.com/yl7b8vmh/image/upload/v1791502427/marcos/marcos/frame-4ao6q7t1.png",
-          "label": "Marco Unahur",
+          "id": "marco-1791638055283",
+          "url": "https://res.cloudinary.com/yl7b8vmh/image/upload/v1791638054/marcos/marcos/frame-ixhfjmjj.png",
+          "label": "Unahur",
           "config": {
             "phrase": {
               "x": 52,
-              "y": 12,
-              "color": "#32502b",
+              "y": 16,
+              "color": "#354c2f",
               "font": "Bebas Neue",
-              "fontSize": 24,
+              "fontSize": 29,
               "width": 300,
-              "curve": 110,
-              "bgColor": "#ffffff"
+              "curve": 118
             },
             "name": {
               "x": 50,
-              "y": 100,
+              "y": 93,
               "textColor": "#000000",
-              "bgColor": "#f2e9c2",
+              "bgColor": "#ecdcb8",
               "font": "Montserrat",
               "fontSize": 20
             }
