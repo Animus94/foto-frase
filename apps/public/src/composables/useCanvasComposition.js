@@ -61,6 +61,7 @@ async function loadGoogleFont(fontFamily) {
   const linkId = `gfont-${fontFamily.replace(/\s+/g, '-')}`;
   let link = document.getElementById(linkId);
   
+  let newlyAdded = false;
   if (!link) {
     link = document.createElement('link');
     link.id = linkId;
@@ -74,10 +75,28 @@ async function loadGoogleFont(fontFamily) {
     
     document.head.appendChild(link);
     await loadPromise;
+    newlyAdded = true;
   }
   
   try {
-    await document.fonts.load(`12px "${fontFamily}"`);
+    if (newlyAdded) {
+      // Small delay to allow the browser to parse the newly loaded stylesheet rules
+      await new Promise(r => requestAnimationFrame(r));
+    }
+    
+    // Force the browser to recognize the font by injecting it into the DOM temporarily
+    const span = document.createElement('span');
+    span.style.fontFamily = `"${fontFamily}"`;
+    span.style.visibility = 'hidden';
+    span.style.position = 'absolute';
+    span.textContent = 'A';
+    document.body.appendChild(span);
+    
+    // Trigger the load
+    await document.fonts.load(`16px "${fontFamily}"`);
+    await document.fonts.ready;
+    
+    document.body.removeChild(span);
   } catch(e) {
     console.warn('Could not load font', fontFamily, e);
   }
@@ -417,6 +436,12 @@ function drawMarcoConfiguredText(ctx, width, height, phraseText, nameText, confi
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
 
+    if (config.phrase.letterSpacing) {
+      ctx.letterSpacing = config.phrase.letterSpacing * scale + 'px';
+    } else {
+      ctx.letterSpacing = '0px';
+    }
+
     if (curve === 0) {
       const textWidth = ctx.measureText(phraseText).width;
       const paddingX = fontSize * 0.5;
@@ -429,9 +454,19 @@ function drawMarcoConfiguredText(ctx, width, height, phraseText, nameText, confi
         drawRoundedRect(ctx, x - w/2, y - h/2, w, h, 8);
         ctx.fillStyle = config.phrase.color || '#000000';
       }
+      
+      if (config.phrase.strokeWidth && config.phrase.strokeWidth > 0) {
+        ctx.strokeStyle = config.phrase.strokeColor || '#000000';
+        ctx.lineWidth = config.phrase.strokeWidth * scale;
+        ctx.lineJoin = 'round';
+        ctx.strokeText(phraseText, x, y);
+      }
+      
       ctx.fillText(phraseText, x, y);
     } else {
-      drawCurvedText(ctx, phraseText, x, y, fontSize, curve);
+      const scaledLetterSpacing = (config.phrase.letterSpacing || 0) * scale;
+      const scaledStrokeWidth = (config.phrase.strokeWidth || 0) * scale;
+      drawCurvedText(ctx, phraseText, x, y, fontSize, curve, scaledLetterSpacing, scaledStrokeWidth, config.phrase.strokeColor);
     }
     ctx.restore();
   }
@@ -444,6 +479,12 @@ function drawMarcoConfiguredText(ctx, width, height, phraseText, nameText, confi
     const fontSize = (config.name.fontSize || 16) * scale;
     
     ctx.font = `${fontSize}px "${config.name.font || 'Montserrat'}"`;
+    if (config.name.letterSpacing) {
+      ctx.letterSpacing = config.name.letterSpacing * scale + 'px';
+    } else {
+      ctx.letterSpacing = '0px';
+    }
+    
     const textWidth = ctx.measureText(nameText).width;
     const paddingX = fontSize * 0.5;
     const paddingY = fontSize * 0.3;
@@ -459,15 +500,24 @@ function drawMarcoConfiguredText(ctx, width, height, phraseText, nameText, confi
     ctx.fillStyle = config.name.textColor || '#ffffff';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
+    
+    if (config.name.strokeWidth && config.name.strokeWidth > 0) {
+      ctx.strokeStyle = config.name.strokeColor || '#000000';
+      ctx.lineWidth = config.name.strokeWidth * scale;
+      ctx.lineJoin = 'round';
+      ctx.strokeText(nameText, x, y);
+    }
+    
     ctx.fillText(nameText, x, y);
     ctx.restore();
   }
 }
 
-function drawCurvedText(ctx, text, x, y, fontSize, curve) {
+function drawCurvedText(ctx, text, x, y, fontSize, curve, letterSpacing = 0, strokeWidth = 0, strokeColor = '#000000') {
   const len = text.length;
   // match the designer logic
-  const L = len * fontSize * 0.45;
+  const charWidth = fontSize * 0.45 + letterSpacing;
+  const L = len * charWidth;
   const angleRad = (Math.abs(curve) * Math.PI) / 180;
   const R = angleRad > 0.01 ? L / angleRad : 10000;
   const isRainbow = curve > 0;
@@ -488,6 +538,11 @@ function drawCurvedText(ctx, text, x, y, fontSize, curve) {
     
     ctx.rotate((angle * Math.PI) / 180);
     ctx.translate(0, -originY);
+    if (strokeWidth > 0) {
+      ctx.strokeStyle = strokeColor;
+      ctx.lineWidth = strokeWidth;
+      ctx.strokeText(text[i], 0, 0);
+    }
     ctx.fillText(text[i], 0, 0);
     ctx.restore();
   }

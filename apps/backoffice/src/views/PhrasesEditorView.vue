@@ -19,7 +19,9 @@ const {
   addMarco,
   removeMarco,
   updateMarcoConfig,
-  updateMarcoLabel
+  updateMarcoLabel,
+  moveOptionUp,
+  moveOptionDown
 
 } = usePhrasesEditor({ allowMock: true })
 
@@ -105,7 +107,7 @@ onMounted(load)
         </thead>
         
         <tbody>
-          <template v-for="option in options" :key="option.id">
+          <template v-for="(option, index) in options" :key="option.id">
             <tr>
               <td>
                 <input
@@ -124,9 +126,13 @@ onMounted(load)
               </td>
               <td class="ff-muted">{{ prefix }} {{ option.label }}</td>
               <td>
-                <button type="button" class="ff-button ff-button--secondary" style="padding: 4px 8px; font-size: 0.8rem;" @click="toggleMarcos(option.id)">
-                  {{ expandedPhraseId === option.id ? 'Cerrar Marcos' : 'Marcos (' + (option.marcos ? option.marcos.length : 0) + ')' }}
-                </button>
+                <div style="display:flex; gap:0.25rem;">
+                  <button type="button" class="ff-button ff-button--secondary" style="padding: 2px 6px;" @click="moveOptionUp(option.id)" :disabled="index === 0">↑</button>
+                  <button type="button" class="ff-button ff-button--secondary" style="padding: 2px 6px;" @click="moveOptionDown(option.id)" :disabled="index === options.length - 1">↓</button>
+                  <button type="button" class="ff-button ff-button--secondary" style="padding: 4px 8px; font-size: 0.8rem;" @click="toggleMarcos(option.id)">
+                    {{ expandedPhraseId === option.id ? 'Cerrar Marcos' : 'Marcos (' + (option.marcos ? option.marcos.length : 0) + ')' }}
+                  </button>
+                </div>
               </td>
             </tr>
             <tr v-if="expandedPhraseId === option.id">

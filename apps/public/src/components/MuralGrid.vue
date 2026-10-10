@@ -68,9 +68,9 @@ const qrCodeUrl = computed(() =>
         </div>
       </div>
 
-      <!-- FILA 3: Desplazamiento DERECHA -->
+      <!-- FILA 3: Desplazamiento DERECHA (Desfasada) -->
       <div class="w-full overflow-hidden flex items-center py-1">
-        <div class="track animate-marquee-right flex flex-row flex-nowrap gap-4 w-max items-center">
+        <div class="track animate-marquee-right flex flex-row flex-nowrap gap-4 w-max items-center" style="animation-delay: -22.5s;">
           <div 
             v-for="(photo, index) in triplicatedItems" 
             :key="'r3-' + index"

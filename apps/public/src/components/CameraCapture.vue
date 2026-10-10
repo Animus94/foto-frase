@@ -98,7 +98,7 @@ async function handleFallbackFile(event) {
     <template v-if="props.mode === 'gallery'">
       <div class="flex flex-col items-center justify-center gap-4 py-8">
         <div v-if="marcos.length > 0" class="flex flex-col items-center gap-2 mb-4">
-          <p class="text-sm text-emerald-200">Eleg� un marco para tu foto:</p>
+          <p class="text-sm text-emerald-200">Elegí un marco para tu foto:</p>
           <div class="flex items-center gap-4">
             <button type="button" class="bg-emerald-900/50 text-emerald-200 rounded-full w-10 h-10 flex items-center justify-center border border-emerald-700" @click="prevMarco"><</button>
             <span class="text-white font-bold min-w-[120px] text-center">{{ selectedMarco?.label || 'Base' }}</span>

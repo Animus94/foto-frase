@@ -119,6 +119,24 @@ export function usePhrasesEditor(options = {}) {
     if (option) option.label = label
   }
 
+  function moveOptionUp(id) {
+    const index = phraseOptions.value.findIndex(item => item.id === id)
+    if (index > 0) {
+      const temp = phraseOptions.value[index]
+      phraseOptions.value[index] = phraseOptions.value[index - 1]
+      phraseOptions.value[index - 1] = temp
+    }
+  }
+
+  function moveOptionDown(id) {
+    const index = phraseOptions.value.findIndex(item => item.id === id)
+    if (index > -1 && index < phraseOptions.value.length - 1) {
+      const temp = phraseOptions.value[index]
+      phraseOptions.value[index] = phraseOptions.value[index + 1]
+      phraseOptions.value[index + 1] = temp
+    }
+  }
+
   
   function addMarco(phraseId, url, label, config = null) {
     const option = phraseOptions.value.find((item) => item.id === phraseId)
@@ -205,6 +223,8 @@ export function usePhrasesEditor(options = {}) {
     updateMarcoLabel,
     updatePrefix,
     save,
+    moveOptionUp,
+    moveOptionDown,
   }
 }
 

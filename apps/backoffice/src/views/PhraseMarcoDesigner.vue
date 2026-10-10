@@ -11,9 +11,25 @@ const emit = defineEmits(['save', 'cancel'])
 
 const config = ref(JSON.parse(JSON.stringify(props.marco.config)))
 
-// Asegurar valores por defecto para fuentes
+// Asegurar valores por defecto para fuentes y fondos
 if (!config.value.phrase.font) config.value.phrase.font = 'Montserrat'
 if (!config.value.name.font) config.value.name.font = 'Montserrat'
+
+if (config.value.phrase.bgColor === 'transparent' || !config.value.phrase.bgColor) {
+  config.value.phrase.bgTransparent = true
+  config.value.phrase.bgColor = '#ffffff'
+}
+if (config.value.name.bgColor === 'transparent' || !config.value.name.bgColor) {
+  config.value.name.bgTransparent = true
+  config.value.name.bgColor = '#ffffff'
+}
+
+if (config.value.phrase.strokeWidth === undefined) config.value.phrase.strokeWidth = 0
+if (config.value.phrase.strokeColor === undefined) config.value.phrase.strokeColor = '#000000'
+if (config.value.phrase.letterSpacing === undefined) config.value.phrase.letterSpacing = 0
+if (config.value.name.strokeWidth === undefined) config.value.name.strokeWidth = 0
+if (config.value.name.strokeColor === undefined) config.value.name.strokeColor = '#000000'
+if (config.value.name.letterSpacing === undefined) config.value.name.letterSpacing = 0
 
 const availableFonts = [
   'Montserrat', 'Roboto', 'Oswald', 'Playfair Display', 'Pacifico', 'Bebas Neue'
@@ -60,13 +76,14 @@ function startDrag(e, element) {
   window.addEventListener('touchend', upHandler)
 }
 
-function getCharStyle(i, len, curve, fontSize) {
+function getCharStyle(i, len, curve, fontSize, letterSpacing = 0) {
   const anglePerChar = curve / (len - 1 || 1)
   const startAngle = -curve / 2
   const angle = startAngle + i * anglePerChar
   
-  // Approximate curve radius based on font size and length
-  const L = len * fontSize * 0.45 
+  // Approximate curve radius based on font size and length, plus letter spacing
+  const charWidth = fontSize * 0.45 + letterSpacing
+  const L = len * charWidth 
   const angleRad = (Math.abs(curve) * Math.PI) / 180
   
   let R = angleRad > 0.01 ? L / angleRad : 10000
@@ -83,7 +100,12 @@ function getCharStyle(i, len, curve, fontSize) {
 }
 
 function save() {
-  emit('save', config.value)
+  const result = JSON.parse(JSON.stringify(config.value))
+  if (result.phrase.bgTransparent) result.phrase.bgColor = 'transparent'
+  if (result.name.bgTransparent) result.name.bgColor = 'transparent'
+  delete result.phrase.bgTransparent
+  delete result.name.bgTransparent
+  emit('save', result)
 }
 
 function cancel() {
@@ -109,9 +131,14 @@ function cancel() {
             <label>Color (Hex)</label>
             <input type="color" v-model="config.phrase.color" />
           </div>
-          <div class="ff-field">
+          <div class="ff-field" style="display:flex; flex-direction:column; gap:0.5rem">
             <label>Color de Fondo</label>
-            <input type="color" v-model="config.phrase.bgColor" />
+            <div style="display:flex; align-items:center; gap:0.5rem;">
+              <input type="color" v-model="config.phrase.bgColor" :disabled="config.phrase.bgTransparent" />
+              <label style="display:flex; align-items:center; gap:0.25rem; font-weight:normal; margin:0">
+                <input type="checkbox" v-model="config.phrase.bgTransparent" /> Sin fondo
+              </label>
+            </div>
           </div>
           <div class="ff-field">
             <label>Posición X (%)</label>
@@ -131,6 +158,19 @@ function cancel() {
             <div style="text-align:right; font-size:0.8rem; color:#666">{{ config.phrase.curve || 0 }}°</div>
           </div>
 
+          <div class="ff-field">
+            <label>Color de Contorno</label>
+            <input type="color" v-model="config.phrase.strokeColor" />
+          </div>
+          <div class="ff-field">
+            <label>Grosor de Contorno</label>
+            <input type="range" min="0" max="10" v-model.number="config.phrase.strokeWidth" />
+            <div style="text-align:right; font-size:0.8rem; color:#666">{{ config.phrase.strokeWidth || 0 }}px</div>
+          </div>
+          <div class="ff-field">
+            <label>Espaciado de letras</label>
+            <input type="number" step="0.5" v-model.number="config.phrase.letterSpacing" />
+          </div>
           <hr style="margin: 1rem 0; border: none; border-top: 1px solid #ccc;" />
 
           <h3>Nombre del Participante</h3>
@@ -144,9 +184,14 @@ function cancel() {
             <label>Color de Letra</label>
             <input type="color" v-model="config.name.textColor" />
           </div>
-          <div class="ff-field">
+          <div class="ff-field" style="display:flex; flex-direction:column; gap:0.5rem">
             <label>Color de Fondo</label>
-            <input type="color" v-model="config.name.bgColor" />
+            <div style="display:flex; align-items:center; gap:0.5rem;">
+              <input type="color" v-model="config.name.bgColor" :disabled="config.name.bgTransparent" />
+              <label style="display:flex; align-items:center; gap:0.25rem; font-weight:normal; margin:0">
+                <input type="checkbox" v-model="config.name.bgTransparent" /> Sin fondo
+              </label>
+            </div>
           </div>
           <div class="ff-field">
             <label>Posición X (%)</label>
@@ -159,6 +204,19 @@ function cancel() {
           <div class="ff-field">
             <label>Tamaño Fuente</label>
             <input type="number" v-model.number="config.name.fontSize" />
+          </div>
+          <div class="ff-field">
+            <label>Color de Contorno</label>
+            <input type="color" v-model="config.name.strokeColor" />
+          </div>
+          <div class="ff-field">
+            <label>Grosor de Contorno</label>
+            <input type="range" min="0" max="10" v-model.number="config.name.strokeWidth" />
+            <div style="text-align:right; font-size:0.8rem; color:#666">{{ config.name.strokeWidth || 0 }}px</div>
+          </div>
+          <div class="ff-field">
+            <label>Espaciado de letras</label>
+            <input type="number" step="0.5" v-model.number="config.name.letterSpacing" />
           </div>
         </div>
 
@@ -173,9 +231,11 @@ function cancel() {
                    left: config.phrase.x + '%', 
                    top: config.phrase.y + '%', 
                    color: config.phrase.color,
-                   backgroundColor: (!config.phrase.curve || config.phrase.curve === 0) ? config.phrase.bgColor : 'transparent',
+                   backgroundColor: (!config.phrase.curve || config.phrase.curve === 0) && !config.phrase.bgTransparent ? config.phrase.bgColor : 'transparent',
                    fontFamily: config.phrase.font,
-                   fontSize: config.phrase.fontSize + 'px' 
+                   fontSize: config.phrase.fontSize + 'px',
+                   letterSpacing: (config.phrase.letterSpacing || 0) + 'px',
+                   WebkitTextStroke: (config.phrase.strokeWidth || 0) + 'px ' + (config.phrase.strokeColor || '#000000')
                  }">
               <template v-if="!config.phrase.curve || config.phrase.curve === 0">
                 {{ props.prefix }} {{ props.phraseLabel }}
@@ -183,7 +243,7 @@ function cancel() {
               <template v-else>
                 <div style="position: relative; width: 0; height: 0; display: flex; justify-content: center;">
                   <span v-for="(char, i) in (props.prefix + ' ' + props.phraseLabel).trim().split('')" :key="i"
-                        :style="getCharStyle(i, (props.prefix + ' ' + props.phraseLabel).trim().length, config.phrase.curve, config.phrase.fontSize)">
+                        :style="getCharStyle(i, (props.prefix + ' ' + props.phraseLabel).trim().length, config.phrase.curve, config.phrase.fontSize, config.phrase.letterSpacing || 0)">
                     {{ char === ' ' ? '\u00A0' : char }}
                   </span>
                 </div>
@@ -198,9 +258,11 @@ function cancel() {
                    left: config.name.x + '%', 
                    top: config.name.y + '%', 
                    color: config.name.textColor, 
-                   backgroundColor: config.name.bgColor,
+                   backgroundColor: !config.name.bgTransparent ? config.name.bgColor : 'transparent',
                    fontFamily: config.name.font,
-                   fontSize: config.name.fontSize + 'px' 
+                   fontSize: config.name.fontSize + 'px',
+                   letterSpacing: (config.name.letterSpacing || 0) + 'px',
+                   WebkitTextStroke: (config.name.strokeWidth || 0) + 'px ' + (config.name.strokeColor || '#000000')
                  }"> Tu Nombre o Agrupación </div>
           </div>
         </div>
