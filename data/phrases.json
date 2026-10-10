@@ -152,15 +152,21 @@
               "fontSize": 24,
               "width": 300,
               "bgColor": "#255432",
-              "curve": 0
+              "curve": 0,
+              "strokeWidth": 0,
+              "strokeColor": "#000000",
+              "letterSpacing": 0
             },
             "name": {
-              "x": 63,
-              "y": 72,
+              "x": 74,
+              "y": 78,
               "textColor": "#ffffff",
-              "bgColor": "#265332",
+              "bgColor": "transparent",
               "font": "Montserrat",
-              "fontSize": 16
+              "fontSize": 21,
+              "strokeWidth": 1,
+              "strokeColor": "#255432",
+              "letterSpacing": 0
             }
           }
         }
