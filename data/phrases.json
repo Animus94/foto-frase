@@ -259,12 +259,15 @@
             "phrase": {
               "x": 51,
               "y": 62,
-              "color": "#ffffff",
-              "font": "Playfair Display",
+              "color": "#faf8f3",
+              "font": "Roboto",
               "fontSize": 24,
               "width": 300,
-              "curve": -100,
-              "bgColor": "#293660"
+              "curve": -80,
+              "bgColor": "#293660",
+              "strokeWidth": 1,
+              "strokeColor": "#27345f",
+              "letterSpacing": 1.5
             },
             "name": {
               "x": 51,
@@ -272,7 +275,10 @@
               "textColor": "#ffffff",
               "bgColor": "#2a385f",
               "font": "Montserrat",
-              "fontSize": 22
+              "fontSize": 26,
+              "strokeWidth": 0,
+              "strokeColor": "#000000",
+              "letterSpacing": 0
             }
           }
         },
@@ -283,20 +289,27 @@
           "config": {
             "phrase": {
               "x": 52,
-              "y": 16,
+              "y": 17,
               "color": "#354c2f",
               "font": "Bebas Neue",
               "fontSize": 29,
               "width": 300,
-              "curve": 118
+              "curve": 118,
+              "bgColor": "#ffffff",
+              "strokeWidth": 0,
+              "strokeColor": "#e7d8ba",
+              "letterSpacing": 0
             },
             "name": {
               "x": 50,
               "y": 93,
-              "textColor": "#000000",
-              "bgColor": "#ecdcb8",
+              "textColor": "#2549b6",
+              "bgColor": "transparent",
               "font": "Montserrat",
-              "fontSize": 20
+              "fontSize": 22,
+              "strokeWidth": 1,
+              "strokeColor": "#355031",
+              "letterSpacing": 0
             }
           }
         }
