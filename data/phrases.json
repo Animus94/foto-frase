@@ -3,6 +3,119 @@
   "prefix": "Yo marcho",
   "options": [
     {
+      "id": "como-graduada",
+      "label": "como graduada",
+      "active": true,
+      "marcos": [
+        {
+          "id": "marco-1791637761502",
+          "url": "https://res.cloudinary.com/yl7b8vmh/image/upload/v1791637761/marcos/marcos/frame-h8be75ts.png",
+          "label": "Unahur",
+          "config": {
+            "phrase": {
+              "x": 52,
+              "y": 61,
+              "color": "#ffffff",
+              "font": "Bebas Neue",
+              "fontSize": 24,
+              "width": 300,
+              "bgColor": "#354f2d",
+              "curve": -114
+            },
+            "name": {
+              "x": 50,
+              "y": 93,
+              "textColor": "#000000",
+              "bgColor": "#e0cb9c",
+              "font": "Montserrat",
+              "fontSize": 20
+            }
+          }
+        },
+        {
+          "id": "marco-1791637898332",
+          "url": "https://res.cloudinary.com/yl7b8vmh/image/upload/v1791637898/marcos/marcos/frame-snt7upfq.png",
+          "label": "Universidad Publica",
+          "config": {
+            "phrase": {
+              "x": 50,
+              "y": 61,
+              "color": "#c3a428",
+              "font": "Bebas Neue",
+              "fontSize": 29,
+              "width": 300,
+              "bgColor": "#293565",
+              "curve": -119
+            },
+            "name": {
+              "x": 52,
+              "y": 96,
+              "textColor": "#ffffff",
+              "bgColor": "#2a385f",
+              "font": "Montserrat",
+              "fontSize": 24
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "comision",
+      "label": "como graduado",
+      "active": true,
+      "marcos": [
+        {
+          "id": "marco-1791509155255",
+          "url": "https://res.cloudinary.com/yl7b8vmh/image/upload/v1791509154/marcos/marcos/frame-ucqvt1zs.png",
+          "label": "UNAHUR",
+          "config": {
+            "phrase": {
+              "x": 50,
+              "y": 57,
+              "color": "#354e2e",
+              "font": "Bebas Neue",
+              "fontSize": 24,
+              "width": 300,
+              "curve": 21
+            },
+            "name": {
+              "x": 51,
+              "y": 93,
+              "textColor": "#042f07",
+              "bgColor": "#e9dab5",
+              "font": "Playfair Display",
+              "fontSize": 22
+            }
+          }
+        },
+        {
+          "id": "marco-1791569297970",
+          "url": "https://res.cloudinary.com/yl7b8vmh/image/upload/v1791569297/marcos/marcos/frame-jsbrulyc.png",
+          "label": "Universidad Publica",
+          "config": {
+            "phrase": {
+              "x": 49,
+              "y": 62,
+              "color": "#2c3963",
+              "font": "Bebas Neue",
+              "fontSize": 24,
+              "width": 300,
+              "bgColor": "#ffffff",
+              "curve": -73
+            },
+            "name": {
+              "x": 52,
+              "y": 96,
+              "textColor": "#ffffff",
+              "bgColor": "#2d3865",
+              "font": "Montserrat",
+              "fontSize": 26
+            }
+          }
+        }
+      ]
+    },
+    {
       "id": "familia",
       "label": "como estudiante",
       "active": true,
@@ -72,62 +185,6 @@
       ]
     },
     {
-      "id": "comision",
-      "label": "como graduado",
-      "active": true,
-      "marcos": [
-        {
-          "id": "marco-1791509155255",
-          "url": "https://res.cloudinary.com/yl7b8vmh/image/upload/v1791509154/marcos/marcos/frame-ucqvt1zs.png",
-          "label": "UNAHUR",
-          "config": {
-            "phrase": {
-              "x": 50,
-              "y": 57,
-              "color": "#354e2e",
-              "font": "Bebas Neue",
-              "fontSize": 24,
-              "width": 300,
-              "curve": 21
-            },
-            "name": {
-              "x": 51,
-              "y": 93,
-              "textColor": "#042f07",
-              "bgColor": "#e9dab5",
-              "font": "Playfair Display",
-              "fontSize": 22
-            }
-          }
-        },
-        {
-          "id": "marco-1791569297970",
-          "url": "https://res.cloudinary.com/yl7b8vmh/image/upload/v1791569297/marcos/marcos/frame-jsbrulyc.png",
-          "label": "Universidad Publica",
-          "config": {
-            "phrase": {
-              "x": 49,
-              "y": 62,
-              "color": "#2c3963",
-              "font": "Bebas Neue",
-              "fontSize": 24,
-              "width": 300,
-              "bgColor": "#ffffff",
-              "curve": -73
-            },
-            "name": {
-              "x": 52,
-              "y": 96,
-              "textColor": "#ffffff",
-              "bgColor": "#2d3865",
-              "font": "Montserrat",
-              "fontSize": 26
-            }
-          }
-        }
-      ]
-    },
-    {
       "id": "hijos",
       "label": "con la UNAHUR",
       "active": true,
@@ -178,63 +235,6 @@
               "bgColor": "#ecdcb8",
               "font": "Montserrat",
               "fontSize": 20
-            }
-          }
-        }
-      ]
-    },
-    {
-      "id": "como-graduada",
-      "label": "como graduada",
-      "active": true,
-      "marcos": [
-        {
-          "id": "marco-1791637761502",
-          "url": "https://res.cloudinary.com/yl7b8vmh/image/upload/v1791637761/marcos/marcos/frame-h8be75ts.png",
-          "label": "Unahur",
-          "config": {
-            "phrase": {
-              "x": 52,
-              "y": 61,
-              "color": "#ffffff",
-              "font": "Bebas Neue",
-              "fontSize": 24,
-              "width": 300,
-              "bgColor": "#354f2d",
-              "curve": -114
-            },
-            "name": {
-              "x": 50,
-              "y": 93,
-              "textColor": "#000000",
-              "bgColor": "#e0cb9c",
-              "font": "Montserrat",
-              "fontSize": 20
-            }
-          }
-        },
-        {
-          "id": "marco-1791637898332",
-          "url": "https://res.cloudinary.com/yl7b8vmh/image/upload/v1791637898/marcos/marcos/frame-snt7upfq.png",
-          "label": "Universidad Publica",
-          "config": {
-            "phrase": {
-              "x": 50,
-              "y": 61,
-              "color": "#c3a428",
-              "font": "Bebas Neue",
-              "fontSize": 29,
-              "width": 300,
-              "bgColor": "#293565",
-              "curve": -119
-            },
-            "name": {
-              "x": 52,
-              "y": 96,
-              "textColor": "#ffffff",
-              "bgColor": "#2a385f",
-              "font": "Montserrat",
-              "fontSize": 24
             }
           }
         }
