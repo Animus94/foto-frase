@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Backoffice — Mural 5ta Marcha</title>
+    <script>
+      // Restores the real deep-linked path after the site-root 404.html
+      // redirect (docs/deploy/404.html, copied by deploy-pages.yml) — must
+      // run before Vue Router reads the URL on boot (router.js).
+      ;(function () {
+        var original = new URLSearchParams(window.location.search).get('p')
+        if (original) window.history.replaceState(null, '', original)
+      })()
+    </script>
+    <script type="module" crossorigin src="/foto-frase/backoffice/assets/index-D4llYVoP.js"></script>
+    <link rel="stylesheet" crossorigin href="/foto-frase/backoffice/assets/index-DUhPIqvs.css">
+  </head>
+  <body>
+    <div id="app"></div>
+  </body>
+</html>

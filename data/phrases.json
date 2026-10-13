@@ -1,0 +1,319 @@
+{
+  "version": 1,
+  "prefix": "Yo marcho",
+  "options": [
+    {
+      "id": "como-graduada",
+      "label": "como graduada",
+      "active": true,
+      "marcos": [
+        {
+          "id": "marco-1791637761502",
+          "url": "https://res.cloudinary.com/yl7b8vmh/image/upload/v1791637761/marcos/marcos/frame-h8be75ts.png",
+          "label": "Unahur",
+          "config": {
+            "phrase": {
+              "x": 52,
+              "y": 61,
+              "color": "#e9d7b3",
+              "font": "Playfair Display",
+              "fontSize": 24,
+              "width": 300,
+              "bgColor": "#354f2d",
+              "curve": -114,
+              "strokeWidth": 1,
+              "strokeColor": "#30492b",
+              "letterSpacing": 0
+            },
+            "name": {
+              "x": 50,
+              "y": 93,
+              "textColor": "#344d2f",
+              "bgColor": "#e9d9af",
+              "font": "Pacifico",
+              "fontSize": 24,
+              "strokeWidth": 0,
+              "strokeColor": "#2e4076",
+              "letterSpacing": 0
+            }
+          }
+        },
+        {
+          "id": "marco-1791637898332",
+          "url": "https://res.cloudinary.com/yl7b8vmh/image/upload/v1791637898/marcos/marcos/frame-snt7upfq.png",
+          "label": "Universidad Publica",
+          "config": {
+            "phrase": {
+              "x": 50,
+              "y": 61,
+              "color": "#fafaf8",
+              "font": "Roboto",
+              "fontSize": 29,
+              "width": 300,
+              "bgColor": "#293565",
+              "curve": -119,
+              "strokeWidth": 1,
+              "strokeColor": "#26335f",
+              "letterSpacing": 0
+            },
+            "name": {
+              "x": 51,
+              "y": 96,
+              "textColor": "#ffffff",
+              "bgColor": "#2a385f",
+              "font": "Roboto",
+              "fontSize": 28,
+              "strokeWidth": 0,
+              "strokeColor": "#000000",
+              "letterSpacing": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "comision",
+      "label": "como graduado",
+      "active": true,
+      "marcos": [
+        {
+          "id": "marco-1791509155255",
+          "url": "https://res.cloudinary.com/yl7b8vmh/image/upload/v1791509154/marcos/marcos/frame-ucqvt1zs.png",
+          "label": "UNAHUR",
+          "config": {
+            "phrase": {
+              "x": 53,
+              "y": 16,
+              "color": "#e8d5b4",
+              "font": "Pacifico",
+              "fontSize": 25,
+              "width": 300,
+              "curve": 145,
+              "bgColor": "transparent",
+              "strokeWidth": 1,
+              "strokeColor": "#354e2e",
+              "letterSpacing": 3.5
+            },
+            "name": {
+              "x": 50,
+              "y": 93,
+              "textColor": "#287c04",
+              "bgColor": "transparent",
+              "font": "Playfair Display",
+              "fontSize": 24,
+              "strokeWidth": 1,
+              "strokeColor": "#3d4255",
+              "letterSpacing": 0
+            }
+          }
+        },
+        {
+          "id": "marco-1791569297970",
+          "url": "https://res.cloudinary.com/yl7b8vmh/image/upload/v1791569297/marcos/marcos/frame-jsbrulyc.png",
+          "label": "Universidad Publica",
+          "config": {
+            "phrase": {
+              "x": 49,
+              "y": 62,
+              "color": "#2c3963",
+              "font": "Bebas Neue",
+              "fontSize": 24,
+              "width": 300,
+              "bgColor": "#ffffff",
+              "curve": -73
+            },
+            "name": {
+              "x": 52,
+              "y": 96,
+              "textColor": "#ffffff",
+              "bgColor": "#2d3865",
+              "font": "Montserrat",
+              "fontSize": 26
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "familia",
+      "label": "como estudiante",
+      "active": true,
+      "marcos": [
+        {
+          "id": "marco-1791508515398",
+          "url": "https://res.cloudinary.com/yl7b8vmh/image/upload/v1791508514/marcos/marcos/frame-2y1ohgt4.png",
+          "label": "Federacion Unahur",
+          "config": {
+            "phrase": {
+              "x": 50,
+              "y": 3,
+              "color": "#ffffff",
+              "font": "Montserrat",
+              "fontSize": 24,
+              "width": 300,
+              "bgColor": "#255432",
+              "curve": 0,
+              "strokeWidth": 0,
+              "strokeColor": "#000000",
+              "letterSpacing": 0
+            },
+            "name": {
+              "x": 74,
+              "y": 78,
+              "textColor": "#ffffff",
+              "bgColor": "transparent",
+              "font": "Montserrat",
+              "fontSize": 21,
+              "strokeWidth": 1,
+              "strokeColor": "#255432",
+              "letterSpacing": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "docente",
+      "label": "como docente",
+      "active": true
+    },
+    {
+      "id": "companeros",
+      "label": "como no docente",
+      "active": true,
+      "marcos": [
+        {
+          "id": "marco-1791508766346",
+          "url": "https://res.cloudinary.com/yl7b8vmh/image/upload/v1791508765/marcos/marcos/frame-svfhjjwu.png",
+          "label": "Universidad Publica",
+          "config": {
+            "phrase": {
+              "x": 51,
+              "y": 62,
+              "color": "#ffffff",
+              "font": "Bebas Neue",
+              "fontSize": 30,
+              "width": 300,
+              "bgColor": "#480a0a",
+              "curve": -114,
+              "strokeWidth": 1,
+              "strokeColor": "#275d2b",
+              "letterSpacing": 0
+            },
+            "name": {
+              "x": 52,
+              "y": 97,
+              "textColor": "#f8fdf7",
+              "bgColor": "#2a385f",
+              "font": "Bebas Neue",
+              "fontSize": 33,
+              "strokeWidth": 0,
+              "strokeColor": "#26f750",
+              "letterSpacing": 0
+            }
+          }
+        },
+        {
+          "id": "marco-1791648103011",
+          "url": "https://res.cloudinary.com/yl7b8vmh/image/upload/v1791648102/marcos/marcos/frame-m4fvx3ss.png",
+          "label": "Unahur",
+          "config": {
+            "phrase": {
+              "x": 52,
+              "y": 17,
+              "color": "#bff55c",
+              "font": "Bebas Neue",
+              "fontSize": 19,
+              "width": 300,
+              "bgColor": "transparent",
+              "strokeWidth": 0,
+              "strokeColor": "#ffffff",
+              "letterSpacing": 8,
+              "curve": 173
+            },
+            "name": {
+              "x": 50,
+              "y": 93,
+              "textColor": "#ffffff",
+              "bgColor": "transparent",
+              "font": "Montserrat",
+              "fontSize": 23,
+              "strokeWidth": 1,
+              "strokeColor": "#12de3b",
+              "letterSpacing": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "hijos",
+      "label": "con la UNAHUR",
+      "active": true,
+      "marcos": [
+        {
+          "id": "marco-1791502200096",
+          "url": "https://res.cloudinary.com/yl7b8vmh/image/upload/v1791502199/marcos/marcos/frame-eqtc1hvy.png",
+          "label": "Universidad Publica",
+          "config": {
+            "phrase": {
+              "x": 51,
+              "y": 62,
+              "color": "#faf8f3",
+              "font": "Roboto",
+              "fontSize": 24,
+              "width": 300,
+              "curve": -80,
+              "bgColor": "#293660",
+              "strokeWidth": 1,
+              "strokeColor": "#27345f",
+              "letterSpacing": 1.5
+            },
+            "name": {
+              "x": 51,
+              "y": 96,
+              "textColor": "#ffffff",
+              "bgColor": "#2a385f",
+              "font": "Montserrat",
+              "fontSize": 26,
+              "strokeWidth": 0,
+              "strokeColor": "#000000",
+              "letterSpacing": 0
+            }
+          }
+        },
+        {
+          "id": "marco-1791638055283",
+          "url": "https://res.cloudinary.com/yl7b8vmh/image/upload/v1791638054/marcos/marcos/frame-ixhfjmjj.png",
+          "label": "Unahur",
+          "config": {
+            "phrase": {
+              "x": 52,
+              "y": 17,
+              "color": "#354c2f",
+              "font": "Bebas Neue",
+              "fontSize": 29,
+              "width": 300,
+              "curve": 118,
+              "bgColor": "#ffffff",
+              "strokeWidth": 0,
+              "strokeColor": "#e7d8ba",
+              "letterSpacing": 0
+            },
+            "name": {
+              "x": 50,
+              "y": 93,
+              "textColor": "#2549b6",
+              "bgColor": "transparent",
+              "font": "Montserrat",
+              "fontSize": 22,
+              "strokeWidth": 1,
+              "strokeColor": "#355031",
+              "letterSpacing": 0
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
