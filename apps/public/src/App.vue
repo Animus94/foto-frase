@@ -10,7 +10,7 @@ const { needRefresh, reloadForUpdate } = usePwaUpdate()
     <!-- Header Fijo Superior -->
     <header class="sticky top-0 z-50 bg-slate-900/90 backdrop-blur-md border-b border-slate-800/80 px-4 md:px-8 py-3 flex items-center justify-between shrink-0">
       <RouterLink to="/" class="text-emerald-400 font-extrabold text-lg hover:text-emerald-300 transition-colors">
-        Hacia la 5ta Marcha universitaria: Marchamos por la educación, la soberania y la democracia
+        Hacia la 5ta Marcha universitaria: Marchamos por la educación, la soberanía y la democracia
       </RouterLink>
       <nav class="flex items-center gap-4">
         <RouterLink to="/mural" class="text-slate-300 hover:text-emerald-400 font-medium text-sm transition-colors">

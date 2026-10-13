@@ -17,10 +17,37 @@ function handlePhotoClick(photo) {
   }
 }
 
-// Triplicamos la lista para garantizar el scroll infinito continuo
-const triplicatedItems = computed(() => {
+function shuffle(array) {
+  const copy = [...array]
+  for (let i = copy.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [copy[i], copy[j]] = [copy[j], copy[i]];
+  }
+  return copy
+}
+
+// Fila 1: Tarjetas en orden aleatorio (garantizando que no empiece con la misma que la Fila 2 si hay más de 1)
+const row1Items = computed(() => {
+  if (!props.items || props.items.length === 0) return []
+  const shuffled = shuffle(props.items)
+  if (shuffled.length > 1 && shuffled[0]?.public_id === props.items[0]?.public_id) {
+    const swapIdx = Math.floor(Math.random() * (shuffled.length - 1)) + 1
+    ;[shuffled[0], shuffled[swapIdx]] = [shuffled[swapIdx], shuffled[0]]
+  }
+  return [...shuffled, ...shuffled, ...shuffled]
+})
+
+// Fila 2: Orden cronológico natural
+const row2Items = computed(() => {
   if (!props.items || props.items.length === 0) return []
   return [...props.items, ...props.items, ...props.items]
+})
+
+// Fila 3: Tarjetas aleatorias con desfase
+const row3Items = computed(() => {
+  if (!props.items || props.items.length === 0) return []
+  const shuffled = shuffle(props.items)
+  return [...shuffled, ...shuffled, ...shuffled]
 })
 
 const joinUrl = computed(() => `${window.location.origin}${import.meta.env.BASE_URL}`)
@@ -37,11 +64,11 @@ const qrCodeUrl = computed(() =>
     </div>
 
     <template v-else>
-      <!-- FILA 1: Desplazamiento DERECHA -->
+      <!-- FILA 1: Desplazamiento DERECHA (Aleatorio) -->
       <div class="w-full overflow-hidden flex items-center py-1">
         <div class="track animate-marquee-right flex flex-row flex-nowrap gap-4 w-max items-center">
           <div 
-            v-for="(photo, index) in triplicatedItems" 
+            v-for="(photo, index) in row1Items" 
             :key="'r1-' + index"
             class="shrink-0 aspect-[3/4] h-48 md:h-64 bg-slate-900 rounded-2xl overflow-hidden border border-emerald-900/60 shadow-xl shadow-black/80 relative flex items-center justify-center cursor-pointer hover:border-cyan-400 transition-colors"
             @click="handlePhotoClick(photo)"
@@ -58,11 +85,11 @@ const qrCodeUrl = computed(() =>
         </div>
       </div>
 
-      <!-- FILA 2: Desplazamiento IZQUIERDA -->
+      <!-- FILA 2: Desplazamiento IZQUIERDA (Cronológico) -->
       <div class="w-full overflow-hidden flex items-center py-1">
         <div class="track animate-marquee-left flex flex-row flex-nowrap gap-4 w-max items-center">
           <div 
-            v-for="(photo, index) in triplicatedItems" 
+            v-for="(photo, index) in row2Items" 
             :key="'r2-' + index"
             class="shrink-0 aspect-[3/4] h-48 md:h-64 bg-slate-900 rounded-2xl overflow-hidden border border-cyan-900/60 shadow-xl shadow-black/80 relative flex items-center justify-center cursor-pointer hover:border-cyan-400 transition-colors"
             @click="handlePhotoClick(photo)"
@@ -79,11 +106,11 @@ const qrCodeUrl = computed(() =>
         </div>
       </div>
 
-      <!-- FILA 3: Desplazamiento DERECHA (Desfasada) -->
+      <!-- FILA 3: Desplazamiento DERECHA (Aleatorio con Desfase) -->
       <div class="w-full overflow-hidden flex items-center py-1">
         <div class="track animate-marquee-right flex flex-row flex-nowrap gap-4 w-max items-center" style="animation-delay: -22.5s;">
           <div 
-            v-for="(photo, index) in triplicatedItems" 
+            v-for="(photo, index) in row3Items" 
             :key="'r3-' + index"
             class="shrink-0 aspect-[3/4] h-48 md:h-64 bg-slate-900 rounded-2xl overflow-hidden border border-emerald-900/60 shadow-xl shadow-black/80 relative flex items-center justify-center cursor-pointer hover:border-cyan-400 transition-colors"
             @click="handlePhotoClick(photo)"
