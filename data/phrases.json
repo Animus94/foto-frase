@@ -1,11 +1,11 @@
 {
   "version": 1,
-  "prefix": "Yo marcho",
+  "prefix": "Por la Ley de Financiamiento Universitario",
   "options": [
     {
       "id": "como-graduada",
       "label": "como graduada",
-      "active": true,
+      "active": false,
       "marcos": [
         {
           "id": "marco-1791637761502",
@@ -74,7 +74,7 @@
     {
       "id": "comision",
       "label": "como graduado",
-      "active": true,
+      "active": false,
       "marcos": [
         {
           "id": "marco-1791509155255",
@@ -137,7 +137,7 @@
     {
       "id": "familia",
       "label": "como estudiante",
-      "active": true,
+      "active": false,
       "marcos": [
         {
           "id": "marco-1791508515398",
@@ -175,12 +175,12 @@
     {
       "id": "docente",
       "label": "como docente",
-      "active": true
+      "active": false
     },
     {
       "id": "companeros",
       "label": "como no docente",
-      "active": true,
+      "active": false,
       "marcos": [
         {
           "id": "marco-1791508766346",
